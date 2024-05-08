@@ -1,0 +1,167 @@
+<%- include("../layout/head",{title:"Users Manager"})%>
+<%- include("../layout/header")%>
+<%- include("../layout/sidebar")%>
+
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+  <div class="row">
+    <ol class="breadcrumb">
+      <li><a href="/admin/dashboard"><svg class="glyph stroked home">
+            <use xlink:href="#stroked-home"></use>
+          </svg></a></li>
+      <li class="active">Danh sách thành viên</li>
+    </ol>
+  </div>
+  <!--/.row-->
+
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">Danh sách thành viên</h1>
+    </div>
+  </div>
+  <!--/.row-->
+  <div id="deleteAlert" class="alert alert-danger" style="display: none; text-align: center; font-size: 20px;">
+    Không có mục nào được chọn để xóa.
+  </div>
+  <div id="toolbar" class="btn-group">
+    <%if(userValidate.role == "admin"){%>
+    <a href="/admin/users/create" class="btn btn-success">
+      <i class="glyphicon glyphicon-plus"></i> Thêm thành viên
+    </a>
+    <button id="deleteSelected" class="btn btn-danger">Xóa nhiều mục</button>
+    <%}%>
+        </div>
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+                        <table 
+                            data-toolbar="#toolbar"
+                            data-toggle="table">
+
+						    <thead>
+						    <tr>
+						        <th class="col-lg-1" data-field="checkbox" data-sortable="true"></th>
+						        <th class="col-lg-1" data-field="id" data-sortable="true">ID</th>
+						        <th class="col-lg-1" data-field="provider" data-sortable="true">Provider</th>
+						        <th class="col-lg-3" data-field="name"  data-sortable="true">Họ & Tên</th>
+                                <th class="col-lg-4" data-field="email" data-sortable="true">Email</th>
+                                <th class="col-lg-1">Quyền</th>
+                                <th class="col-lg-1">Hành động</th>
+						    </tr>
+                            </thead>
+                            <tbody>
+                                <% for(let user of users) {%>
+    <tr>
+      <td><input type="checkbox" class="myCheckbox" data-id="<%= user._id %>"></td>
+      <td><%=count++%></td>
+      <td><%= user.provider %></td>
+      <td><%=user.full_name%></td>
+      <td><%=user.email%></td>
+      <td><span class="label label-<%=user.role=='admin'?'danger':'success'%>"><%=user.role%></span></td>
+      <td class="form-group">
+        <%if(userValidate.role == "admin"){%>
+        <a href="/admin/users/edit/<%=user._id%>" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
+        <a href="javascript:void(0);" class="btn btn-danger" onclick="confirmDeleteOne('<%= user._id %>')"><i class="glyphicon glyphicon-remove"></i></a>
+        <%}else{%>
+        <%if(userValidate.id == user.id){%>
+        <a href="/admin/users/edit/<%=user._id%>" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
+        <%}%>
+                                          <%}%>
+      </td>
+    </tr>
+    <%}%>
+                            </tbody>
+						</table>
+                    </div>
+                    <div class="panel-footer">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                <% if(page >1 ) {%>
+    <li class="page-item"><a class="page-link" href="/admin/users?page=<%=page-1%>">&laquo;</a></li>
+    <%}%>
+                                <%for(let CurrentPage of pages){%>
+    <%if(CurrentPage==="..."){%>
+    <li class="page-item <%=page===CurrentPage?'active':''%>"><span><%=CurrentPage %></span></li>
+    <%} else {%>
+    <li class="page-item <%=page===CurrentPage?'active':''%>"><a class="page-link" href="/admin/users?page=<%=CurrentPage%>"><%=CurrentPage %></a></li>
+    <%}%>
+                                <%}%>
+    <% if(page < totalPages){%>
+    <li class="page-item"><a class="page-link" href="/admin/users?page=<%=page+1%>">&raquo;</a></li>
+    <%}%>
+                            </ul>
+                        </nav>
+                    </div>
+				</div>
+			</div>
+		</div><!--/.row-->	
+	</div>	<!--/.main-->
+	<script>
+		// hàm cảnh báo xóa đơn
+		const confirmDeleteOne = (UserId) => {
+		  const confirmMsg = "Bạn có chắc muốn xóa User này?";
+		  if (confirm(confirmMsg)) {
+			window.location.href = "/admin/Users/delete/" + UserId;
+			location.reload();
+		  }
+		}
+
+                  // bắt sự kiện Thay đổi trạng thái checkbox
+                  document.querySelectorAll(".myCheckbox").forEach(checkbox => {
+            checkbox.addEventListener("change", () => {
+              updateCheckedIds();
+            });
+          });
+
+          // Update trạng thái checkbox
+          const updateCheckedIds = () => {
+            const checkedIds = [];
+            document.querySelectorAll(".myCheckbox:checked").forEach(checkbox => {
+              checkedIds.push(checkbox.getAttribute("data-id"));
+            });
+            sendCheckedIds(checkedIds);
+          }
+          // Gửi yêu cầu về server (AJAX)
+          const sendCheckedIds = (checkedIds) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/admin/users/deleteAll", true); // open() nhận vào 3 tham số (phương thức, url xử lý, async). true: bất đồng bộ
+            xhr.setRequestHeader("Content-Type", "application/json"); // dữ liệu gửi về dạng JSON
+            xhr.send(JSON.stringify({
+              checkedIds: checkedIds
+            }));
+          }
+          // Thêm hàm hiển thị hộp thoại xác nhận
+          const confirmDelete = () => {
+            return confirm("Bạn có chắc chắn muốn xóa các User đã chọn? User sẽ được chuyển đến thùng rác.");
+          }
+// hiển thị thông báo khi xóa ko checked
+const showDeleteAlert = () => {
+        const deleteAlert = document.getElementById("deleteAlert");
+        deleteAlert.style.display = "block";
+
+        // Ẩn thông báo sau một khoảng thời gian
+        setTimeout(() => {
+          deleteAlert.style.display = "none";
+        }, 1000); // 3 giây
+      };
+
+      // Bắt sự kiện click nút Xóa đã chọn
+      document.getElementById("deleteSelected").addEventListener("click", () => {
+        const checkedCheckboxes = document.querySelectorAll(".myCheckbox:checked");
+
+        if (checkedCheckboxes.length === 0) {
+          // Nếu không có mục nào được chọn, hiển thị thông báo
+          showDeleteAlert();
+        } else {
+          // Nếu có mục được chọn, xác nhận hành động xóa
+          if (confirmDelete()) {
+            updateCheckedIds();
+            location.reload(); // sau khi xóa reload trang
+          }
+        }
+      });
+	  </script>
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-table.js"></script>	
+    <%- include("../layout/footer")%>

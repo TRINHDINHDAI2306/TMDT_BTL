@@ -1,0 +1,297 @@
+:root {
+    --ct-blue-text: #337ab7;
+    --ct-blue-bgc: #30a5ff;
+    --ct-gray-border: #ddd;
+    --ct-red-primary: #d9534f;
+    --ct-red-danger: #f8d7da;
+  }
+  .ct-click-disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  
+  img[src$=".svg"] {
+    width: 24px; /* Đặt kích thước cho icon */
+    height: 24px;
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
+      hue-rotate(0deg) brightness(100%) contrast(100%);
+  }
+  
+  /* -------button------------- */
+  .ct-form-wrapp {
+  
+  }
+  .ct-form-group {
+    position: relative;
+    display: flex;
+    gap: 15px;
+    align-items: stretch;
+    line-height: normal;
+    margin-bottom: 15px;
+    width: 100%;
+  }
+  .ct-form-button {
+    padding: 0 12px;
+    color: white;
+    font-weight: 700;
+    background-color: var(--ct-blue-bgc);
+    border-radius: 3px;
+    outline: none;
+    border: 1px solid transparent;
+  }
+  
+  .ct-form-button img {
+    width: 24px; /* Đặt kích thước cho icon */
+    height: 24px;
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
+      hue-rotate(0deg) brightness(100%) contrast(100%);
+  }
+  
+  .ct-form-button-del {
+    background-color: var(--ct-red-primary);
+    width: fit-content !important;
+  }
+  .ct-form-input {
+    border: 1px solid var(--ct-gray-border);
+    border-radius: 3px;
+    padding: 0 12px;
+    outline: none;
+  }
+  
+  .ct-form-title {
+    margin-top: 12px;
+  }
+  
+  .ct-form-title span {
+    color: var(--ct-blue-text);
+    text-transform: capitalize;
+    font-weight: 700;
+  }
+  .ct-form-title strong {
+    color: var(--ct-red-primary);
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .ct-form-input:hover {
+    border-color: var(--ct-blue-bgc);
+  }
+  .ct-form-input:hover::placeholder {
+    color: var(--ct-blue-text);
+  }
+  
+  /* --------alert------------ */
+  .ct-alert {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%,-100%);
+    transform-origin: top;
+    width: 75%;
+    z-index: -1;
+    font-size: 2.5rem;
+    justify-content: center;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: all 0.25s linear;
+    opacity: 0;
+    visibility: hidden;
+  }
+  
+  /* Thiết lập top cho từng phần tử .ct-alert */
+  /* .ct-alert:nth-child(n) {
+    top: calc((100% + 10px) * (n - 1)); 
+  } */
+  
+  .ct-alert.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%,0);
+    z-index: 9999;
+  }
+  .ct-alert-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    outline: none;
+    border: none;
+    border-radius: 3px;
+    border: 1px solid var(--ct-gray-border);
+  }
+  .ct-alert-button img{
+    filter: brightness(0) saturate(100%)
+  }
+  /* ----pagination------ */
+  .ct-pagination {
+    display: flex;
+    align-items: stretch;
+    gap: 30px;
+  }
+  .ct-pagination .pagination {
+    padding:20px 0;
+    margin: 0;
+  }
+  .ct-pagination-form {
+    display: flex;
+    gap: 0;
+    padding: 20px 0;
+  }
+  .ct-pagination-input,
+  .ct-pagination-button {
+    border: 1px solid var(--ct-gray-border);
+    outline: none;
+  }
+  .ct-pagination-input {
+    color: var(--ct-blue-text);
+    border-radius: 3px 0 0 3px;
+    max-width: 80px;
+    padding: 0 12px;
+  }
+  .ct-pagination-button {
+    color: white;
+    font-weight: 500;
+    background-color: var(--ct-blue-bgc);
+    border-radius: 0 3px 3px 0;
+    padding: 0 12px;
+  }
+  /* ----end-pagination------ */
+  
+  /* -------filter-------------- */
+  .ct-select {
+    position: relative;
+    background-color: #fff;
+    width: 100%;
+  }
+  /* custiom arrow */
+  .ct-select-arrow {
+    position: absolute;
+    content: "";
+    top: 50%;
+    right: 6px;
+    transform-origin: center;
+    transform: translateY(-25%);
+    border: 7px solid;
+    border-color: black transparent transparent transparent;
+    transition: all 0.2s linear;
+  }
+  
+  .ct-select select {
+    padding: 12px 12px;
+    background-color: inherit;
+    border: 2px solid var(--ct-gray-border);
+    border-radius: 3px;
+    -webkit-appearance: none;
+    outline: none;
+    width: 100%;
+    transition: all 0.2s linear;
+    cursor: pointer;
+    text-transform: capitalize;
+  }
+  .ct-select-title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(10%, -50%);
+    align-items: center;
+    background-color: inherit;
+    transition: all 0.2s linear;
+    text-transform: lowercase;
+  }
+  .ct-select ul {
+    position: absolute;
+    content: "";
+    top: 100%;
+    left: 0;
+    width: 100%;
+    border: 1px solid var(--ct-gray-border);
+    list-style: none;
+    z-index: 99;
+    background-color: #f5f5f5;
+    padding: 0;
+    margin: 0;
+    border-radius: 3px;
+    transition: all 0.2s linear;
+    text-transform: capitalize;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    overflow: hidden;
+    transition: 0.2s all;
+    transform: scaleY(0);
+    transform-origin: top;
+    max-height: 350px;
+    overflow-y: scroll;
+  }
+  
+  .ct-select ul li {
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--ct-gray-border);
+    cursor: pointer;
+    transition: all 0.2s linear;
+    color: var(--ct-blue-text);
+    font-weight: 600;
+  }
+  
+  .ct-select ul li:last-child {
+    border-radius: 0 0 3px 3px;
+  }
+  .ct-select ul li:hover {
+    background-color: var(--ct-blue-bgc);
+    color: white;
+  }
+  .ct-select-arrow.click {
+    transform: translateY(-75%) rotateX(180deg);
+  }
+  .ct-select select.click {
+    border-color: var(--ct-blue-bgc);
+  }
+  .ct-select select.active {
+    border-color: var(--ct-blue-bgc);
+    color: var(--ct-blue-text);
+    font-weight: bold;
+  }
+  .ct-select-arrow.active {
+    border-color: var(--ct-blue-bgc) transparent transparent transparent;
+  }
+  .ct-select ul.active {
+    transform: scaleY(1) !important;
+  }
+  
+  
+  
+  
+  /* -------end-filter-------------- */
+  /* ---------ads------------- */
+  .ct-ads-table{
+    display: flex;
+  }
+  /* ---------end ads------------- */
+  .tab-pane {
+    display: inline-block;
+    width: 100%; /* Đảm bảo các tab-pane chiếm toàn bộ chiều rộng của container */
+  }
+  
+  /* -------preview-image----- */
+  .ct-preview-image {
+    position: relative;
+    border: 1px solid var(--ct-gray-border);
+    padding: 6px;
+    cursor: pointer;
+  }
+  img#preview-image {
+    display: block;
+    max-width: 160px;
+    min-height: 212px;
+    object-fit: contain;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .ct-preview-image button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: none;
+  }
+  .ct-preview-image button img {
+    filter: brightness(0) saturate(100%);
+  }

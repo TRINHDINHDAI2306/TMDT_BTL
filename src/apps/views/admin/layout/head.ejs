@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+    <%=title%>
+  </title>
+  <base href="/static/admin/">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/datepicker3.css" rel="stylesheet">
+  <link href="css/bootstrap-table.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+  <link href="css/ct-styles.css" rel="stylesheet">
+
+  <script src="/static/ckeditor/ckeditor.js"></script>
+  <!--Icons-->
+  <script src="js/lumino.glyphs.js"></script>
+  <style>
+    p,
+    span {
+      user-select: text;
+      white-space: pre-wrap;
+      word-break: break-word;
+    };
+
+    #deleteSuccessMessage {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px;
+      background-color: #dff0d8;
+      border: 1px solid #3c763d;
+      border-radius: 5px;
+      display: none;
+      /* Initially hidden */
+    }
+  </style>
+  <!--[if lt IE 9]>
+<script src="js/html5shiv.js"></script>
+<script src="js/respond.min.js"></script>
+<![endif]-->
+
+</head>
+
+<body>

@@ -1,0 +1,195 @@
+<%- include("../layout/head",{title:"Edit Product"})%>
+<%- include("../layout/header")%>
+<%- include("../layout/sidebar")%>	
+		
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">			
+		<div class="row">
+			<ol class="breadcrumb">
+                <li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
+                <li><a href="">Quản lý sản phẩm</a></li>
+				<li class="active"><%=product.name%></li>
+			</ol>
+		</div><!--/.row-->
+		
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header">Sản phẩm: <%=product.name%></h1>
+			</div>
+        </div><!--/.row-->
+        <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="col-md-6">
+                                <form action="/admin/products/update/<%=product._id%>" role="form" method="post" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label>Tên sản phẩm</label>
+                                    <input type="text" name="name" required class="form-control" value='<%=product.name%>'  placeholder="">
+                                </div>
+                                                                
+                                <div class="form-group">
+                                    <label>Giá sản phẩm</label>
+                                    <input type="number" name="price" required value=<%=product.price%> class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Bảo hành</label>
+                                    <input type="text" name="warranty" required value=<%=product.warranty%> class="form-control">
+                                </div>    
+                                <div class="form-group">
+                                    <label>Phụ kiện</label>
+                                    <input type="text" name="accessories" required value=<%=product.accessories%> class="form-control">
+                                </div>                  
+                                <div class="form-group">
+                                    <label>Khuyến mãi</label>
+                                    <input type="text" name="promotion" required value=<%=product.promotion%> class="form-control">
+                                </div>  
+                                <div class="form-group">
+                                    <label>Tình trạng</label>
+                                    <input type="text" name="status" required value=<%=product.status%> type="text" class="form-control">
+                                </div> 
+                                <div class="form-group">
+                                    <label>Danh mục</label>
+                                    <select name="cat_id" class="form-control">
+                                        <%for(let category of categories ){%>
+                                            <option <%= product.cat_id==category.id && "selected" %> value=<%=category._id%>><%=category.title%></option>
+                                        <%}%>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Trạng thái</label>
+                                    <select name="is_stock" class="form-control">
+                                        <option <%= product.is_stock==1 && "selected" %> value=1>Còn hàng</option>
+                                        <option <%= product.is_stock==0 && "selected" %> value=0>Hết hàng</option>
+                                    </select>
+                                </div> 
+                                
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Ảnh sản phẩm</label>
+                                    <i>Chỉ upload được các ảnh có đuôi .jpg, .png, .jpeg, .webp</i>
+                                    <%if(data && data.error){%>
+                                        <div class="alert alert-danger"><%=data.error%></div>
+                                        <%}%>
+                      
+                                    <input type="file" multiple name="thumbnail" accept="images/*" onchange="previewImages(this)" value="">
+                                    <br>
+                                    <div class="preview">
+                                        <% product.thumbnails.forEach((thumbnail)=> { %>
+                                            <div class="image-container">
+                                                <img width="auto" height="150" src="../Uploads/images/<%= thumbnail %>">
+                                            </div>
+                                        <% }); %>
+                                    </div>
+                      
+                                    <script>
+                                      let fileData = []; // Mảng lưu trữ dữ liệu của các file
+                      
+                                      function previewImages(input) {
+                                        const files = input.files;
+                                        const previewDiv = document.querySelector(".preview");
+                      
+                                        if (files) {
+                                          for (let i = 0; i < files.length; i++) {
+                                            const file = files[i];
+                                            const reader = new FileReader();
+                                            reader.onload = function(e) {
+                                              const img = document.createElement("img");
+                                              img.src = e.target.result;
+                                              img.classList.add("preview");
+                                              img.style.maxWidth = '150px';
+                                              img.style.maxHeight = '150px';
+                      
+                                              // Hiển thị ảnh xem trước đã uploads
+                                              const fileName = document.createElement("span");
+                                              fileName.innerHTML = file.name;
+                                              fileName.classList.add("file-name");
+                      
+                                              // Tạo biểu tượng "x" để xóa ảnh
+                                              const deleteIcon = document.createElement("span");
+                                              deleteIcon.innerHTML = "&times;";
+                                              deleteIcon.classList.add("delete-icon");
+                                              deleteIcon.onclick = function() {
+                                                // Xác định index của ảnh trong mảng fileData
+                                                const index = parseInt(imageContainer.getAttribute('data-index'));
+                      
+                                                // Xóa ảnh trong phần xem trước
+                                                previewDiv.removeChild(imageContainer);
+                      
+                                                // Xóa dữ liệu ảnh trong mảng fileData
+                                                fileData.splice(index, 1);
+                      
+                                                // Cập nhật số lượng file trên thanh input
+                                                input.files = new FileListToArray(fileData);
+                      
+                                                // Gửi yêu cầu xóa ảnh đến máy chủ (nếu cần)
+                                                // Ví dụ: fetch('url-to-server', { method: 'DELETE', body: JSON.stringify({ index: index }) });
+                      
+                                                // Đảm bảo rằng vị trí index của các ảnh trong mảng fileData là chính xác
+                                                refreshImageContainers();
+                                              };
+                      
+                                              // Tạo một container cho ảnh, tên tệp và biểu tượng xóa
+                                              const imageContainer = document.createElement("div");
+                                              imageContainer.classList.add("image-container");
+                                              imageContainer.appendChild(img);
+                                              imageContainer.appendChild(fileName);
+                                              imageContainer.appendChild(deleteIcon);
+                      
+                                              // Thêm thuộc tính data-index để lưu vị trí của ảnh trong mảng fileData
+                                              imageContainer.setAttribute('data-index', fileData.length);
+                      
+                                              // Lưu dữ liệu ảnh vào mảng fileData
+                                              fileData.push(file);
+                      
+                                              // Hiển thị ảnh và biểu tượng xóa
+                                              previewDiv.appendChild(imageContainer);
+                                            };
+                                            reader.readAsDataURL(file);
+                                          }
+                                        }
+                      
+                                      }
+                                      // Hàm chuyển đổi FileList sang mảng
+                                      function FileListToArray(fileList) {
+                                        return Array.prototype.slice.call(fileList);
+                                      }
+                      
+                                      // Hàm cập nhật vị trí index của các ảnh trong mảng fileData
+                                      function refreshImageContainers() {
+                                        const imageContainers = document.querySelectorAll('.image-container');
+                                        imageContainers.forEach((container, index) => {
+                                          container.setAttribute('data-index', index);
+                                        });
+                                      }
+                                    </script>
+                                  </div>
+                                
+                                <div class="form-group">
+                                    <label>Sản phẩm nổi bật</label>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input  name="featured" type="checkbox" value="on" <%= product.featured== true && "checked" %>>Nổi bật
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                        <label>Mô tả sản phẩm</label>
+                                        <textarea required name="description" class="form-control" rows="3"><%=product.description%></textarea>
+                                        <script>
+                                            CKEDITOR.replace("description");
+                                        </script>
+                                        
+                                    </div>
+                                <button name="sbm" type="submit" class="btn btn-success">Thêm mới</button>
+                                <button type="reset" class="btn btn-default">Làm mới</button>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                </div><!-- /.col-->
+            </div><!-- /.row -->
+		
+	</div>	<!--/.main-->	
+
+    <%- include("../layout/footer")%>		

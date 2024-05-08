@@ -1,0 +1,38 @@
+<%- include("./layouts/headSite.ejs",{title: "Tim kiem"}) %>
+<%- include("./layouts/headerSite.ejs") %>
+<%- include("./layouts/menuSite.ejs") %>
+<%- include("./layouts/sliderSite.ejs") %>
+                
+                <!--	List Product	-->
+                <div class="products">
+                    <div id="search-result">Kết quả tìm kiếm với sản phẩm <span><%=keyword%></span></div>
+                    <div class="product-list card-deck">
+                        <% for(let product of products){%>
+                            <%- include("./component/product-item",{item:product})%>
+                        <%}%>
+                    </div>
+                </div>
+                <!--	End List Product	-->
+                
+                <div id="pagination">
+                    <ul class="pagination">
+                        <%if(page>1){%>
+                        <li class="page-item"><a class="page-link" href="/search?keyword=<%= keyword %>&page=<%=page-1%>">&laquo;</a></li>
+                        <%}%>
+                        <%for(let CurrentPage of pages){%>
+                            <%if(CurrentPage==="..."){%>
+                                <li class="page-item <%=page===CurrentPage?'active':''%>"><span><%=CurrentPage %></span></li>
+                            <%} else {%>
+                                <li class="page-item <%=page===CurrentPage?'active':''%>"><a class="page-link" href="/search?keyword=<%= keyword %>&page=<%=CurrentPage%>"><%= CurrentPage%></a></li>
+                                <%}%>
+                        <%}%>
+                        <%if(page < totalPages){%>
+                        <li class="page-item"><a class="page-link" href="/search?keyword=<%= keyword %>&page=<%=page+1%>">&raquo;</a></li>
+                        <%}%>
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <%- include("./layouts/sidebarSite")%>
+            <%- include("./layouts/footerSite")%>

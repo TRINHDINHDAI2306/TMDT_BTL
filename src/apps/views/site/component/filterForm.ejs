@@ -1,0 +1,76 @@
+<script>
+  const formSearchHeader = document.getElementById("formSearchHeader");
+  const inputSearch = document.querySelector('[name="keyword"]');
+  const suggBox = document.querySelector(".autocom-box");
+  const dataContainer = document.getElementById("data-container");
+  const nameProducts = JSON.parse(dataContainer.dataset.nameProducts);
+  const thumbnailProducts = JSON.parse(dataContainer.dataset.thumbnailProducts);
+  let dataSuggest = [];
+
+  let shouldShowSuggestions = false; // Biến để kiểm tra xem có nên hiển thị danh sách gợi ý tìm kiếm hay không
+
+  inputSearch.onkeyup = (e) => {
+    const keyword = e.target.value.trim(); // Loại bỏ khoảng trắng đầu và cuối từ khóa tìm kiếm
+    if (keyword) {
+      shouldShowSuggestions = true; // Đặt biến shouldShowSuggestions thành true khi có từ khóa tìm kiếm
+      suggBox.classList.remove("d-none");
+      const filteredProducts = nameProducts.filter((data) => {
+        return data.toLocaleLowerCase().includes(keyword.toLocaleLowerCase());
+      });
+      const filteredThumbnails = thumbnailProducts.filter(
+        (thumbnail, index) => {
+          return nameProducts[index]
+            .toLocaleLowerCase()
+            .includes(keyword.toLocaleLowerCase());
+        }
+      );
+      const dataSuggest = [...new Set(filteredProducts)]
+        .slice(0, 10)
+        .map((data) => {
+          const index = nameProducts.findIndex(
+            (name) => name.toLowerCase() === data.toLowerCase()
+          ); // Tìm chỉ mục của tên sản phẩm trong mảng ban đầu
+          const thumbnail = thumbnailProducts[index];
+          return `<li class="d-flex" style="gap: 8px; margin-bottom:12px;align-items:center;">
+            <img src="../uploads/images/${thumbnail}" alt="${data}" class="d-flex" style="width: 70px; height: 70px; object-fit: contain; border-radius: 8px;" />
+            <span style="font-weight: bold; cursor: pointer; flex: 1; height: 70px; align-items: center; display: flex;">${data}</span>  
+          </li>`;
+        });
+      formSearchHeader.classList.add("active");
+      showSuggestions(dataSuggest);
+      let allList = suggBox.querySelectorAll("span");
+      for (let i = 0; i < allList.length; i++) {
+        allList[i].setAttribute("onclick", "select(this)");
+      }
+    } else {
+      shouldShowSuggestions = false; // Đặt biến shouldShowSuggestions thành false khi không có từ khóa tìm kiếm
+      formSearchHeader.classList.remove("active");
+      suggBox.classList.add("d-none"); // Ẩn danh sách gợi ý khi không có từ khóa tìm kiếm
+    }
+  };
+  // Khi click vào input search
+  inputSearch.onclick = () => {
+    if (shouldShowSuggestions) {
+      suggBox.classList.remove("d-none"); // Hiển thị danh sách gợi ý khi click vào input search và có từ khóa tìm kiếm
+    }
+  };
+  // Khi click vào nút tìm kiếm
+  formSearchHeader.onsubmit = () => {
+    shouldShowSuggestions = false; // Đặt biến shouldShowSuggestions thành false khi thực hiện tìm kiếm
+  };
+  function select(element) {
+    let selectData = element.textContent;
+    inputSearch.value = selectData;
+    formSearchHeader.classList.remove("active");
+  }
+  function showSuggestions(list) {
+    let listData;
+    if (!list.length) {
+      keywordDefault = inputSearch.value;
+      listData = `<li><span>${keywordDefault}</span></li>`;
+    } else {
+      listData = list.join("");
+    }
+    suggBox.innerHTML = listData;
+  }
+</script>

@@ -1,0 +1,166 @@
+<%- include("../layout/head",{title:"Users Recycle_Bin"})%>
+<%- include("../layout/header")%>
+<%- include("../layout/sidebar")%>
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+  <div class="row">
+    <ol class="breadcrumb">
+      <li><a href="/admin/dashboard"><svg class="glyph stroked home">
+            <use xlink:href="#stroked-home"></use>
+          </svg></a></li>
+      <li class="active">Danh sách thành viên</li>
+    </ol>
+  </div>
+  <!--/.row-->
+  <%if(userValidate.role == "admin"){%>
+
+  <div id="row">
+    <a class="btn btn-warning" href="/admin/recycle_bin/products">Danh sách sản phẩm</a>
+    <a class="btn btn-warning" href="/admin/recycle_bin/categories">Danh sách danh mục</a>
+    <a class="btn btn-warning" href="/admin/recycle_bin/users">Danh sách thành viên</a>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">Danh sách thành viên</h1>
+    </div>
+  </div>
+  <!--/.row-->
+  <div id="toolbar" class="btn-group">
+    <button id="moveUsers" class="btn btn-success">Phục hồi</button>
+    <button id="deleteSelected" class="btn btn-danger">Xóa vĩnh viễn</button>
+  </div>
+  <div id="deleteSuccessMessage" style="display: none;" class="alert alert-success">Đã xóa thành công!</div>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <table data-toolbar="#toolbar" data-toggle="table">
+
+            <thead>
+              <tr>
+                <th class="col-lg-1" data-field="checkbox" data-sortable="true"></th>
+                <th data-field="id" data-sortable="true">ID</th>
+                <th data-field="name" data-sortable="true">Họ & Tên</th>
+                <th data-field="email" data-sortable="true">Email</th>
+                <th>Quyền</th>
+              </tr>
+            </thead>
+            <tbody>
+              <%for(let user of usersBin){%>
+              <tr>
+                <td><input type="checkbox" class="myCheckbox" data-id="<%= user._id %>"></td>
+                <td><%=count++%></td>
+                <td><%=user.full_name%></td>
+                <td><%=user.email%></td>
+                <td><span class="label label-success"><%=user.role%></span></td>
+              </tr>
+              <%}%>
+              <script>
+                // Hiển thị thông báo xóa thành công
+                const showDeleteSuccessMessage = () => {
+                  const deleteSuccessMessage = document.getElementById("deleteSuccessMessage");
+                  deleteSuccessMessage.style.display = "block";
+                  setTimeout(() => {
+                    location.reload(); // sau khi xóa reload trang
+                    deleteSuccessMessage.style.display = "none";
+                  }, 1000); // Hiden after 1 seconds
+                };
+                // bắt sự kiện Thay đổi trạng thái checkbox
+                document.querySelectorAll(".myCheckbox").forEach(checkbox => {
+                  checkbox.addEventListener("change", () => {
+                    updateCheckedIds();
+                    updateChecks();
+                  });
+                });
+
+                // Update trạng thái checkbox
+                const updateCheckedIds = () => {
+                  const checkedIds = [];
+                  document.querySelectorAll(".myCheckbox:checked").forEach(checkbox => {
+                    checkedIds.push(checkbox.getAttribute("data-id"));
+                  });
+                  sendCheckedIds(checkedIds);
+                }
+                // Gửi yêu cầu về server (AJAX) sự kiện xóa
+                const sendCheckedIds = (checkedIds) => {
+                  const xhr = new XMLHttpRequest();
+                  xhr.open("POST", "/admin/recycle_bin/users/deleteAll", true); // open() nhận vào 3 tham số (phương thức, url xử lý, async). true: bất đồng bộ
+                  xhr.setRequestHeader("Content-Type", "application/json"); // dữ liệu gửi về dạng JSON
+                  xhr.send(JSON.stringify({
+                    checkedIds: checkedIds
+                  }));
+                }
+
+                // Thêm hàm hiển thị hộp thoại xác nhận
+                const confirmDelete = () => {
+                  return confirm("Tài khoản sau khi xóa sẽ không thể khôi phục. Bạn có chắc chắn muốn xóa các Tài khoản đã chọn?");
+                }
+
+                // Bắt sự kiện click nút Xóa đã chọn
+                document.getElementById("deleteSelected").addEventListener("click", () => {
+                  if (confirmDelete()) { // Nếu người dùng xác nhận muốn xóa
+                    updateCheckedIds();
+                    showDeleteSuccessMessage(); // hiển thị thông báo
+                  }
+                });
+
+                // Update trạng thái checkbox cho button di chuyển
+          const updateChecks = () => {
+          const checkUserIds = [];
+          document.querySelectorAll(".myCheckbox:checked").forEach(checkbox => {
+            checkUserIds.push(checkbox.getAttribute("data-id"))
+          });
+            moveBinToUsers(checkUserIds);
+        }
+
+        //Gửi yêu cầu về server(AJAX) về tính năng di chuyển
+        const moveBinToUsers = (userIds) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open("POST", "/admin/recycle_bin/users/move", true);
+          xhr.setRequestHeader("Content-Type", "application/json")
+          xhr.send(JSON.stringify({
+            userIds
+          }))
+        }
+        // Thêm hàm hiển thị hộp thoại xác nhận
+        const confirmMove = () => {
+          return confirm("Bạn có chắc chắn muốn phục hồi các tài khoản đã chọn?");
+        }
+
+        //Bắt thuộc tính click Di chuyển
+        document.getElementById("moveUsers").addEventListener("click", () => {
+          if (confirmMove()) {
+            updateChecks();
+            location.reload();
+          }
+        })
+
+              </script>
+
+
+            </tbody>
+          </table>
+        </div>
+        <div class="panel-footer">
+          <nav aria-label="Page navigation example">
+            Phan trang
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--/.row-->
+</div>
+<!--/.main-->
+<%}else{%>
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 style="text-align: center;" class="page-header">Bạn không có quyền xem nội dung tại đây !</h1>
+    </div>
+  </div>
+  <%}%>
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap-table.js"></script>
+
+<%- include("../layout/footer")%>

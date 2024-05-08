@@ -1,0 +1,23 @@
+<%- include("./layouts/headSite.ejs",{title: "Gio hang"}) %>
+<%- include("./layouts/headerSite.ejs") %>
+<%- include("./layouts/menuSite.ejs") %>
+<%- include("./layouts/sliderSite.ejs") %>
+                
+                <!--	List Product	-->
+                <div class="products">
+                    <h3><%=category.title%> (hiện có <%=totalRows%> sản phẩm)</h3>
+                    <div class="product-list card-deck">
+                        <%for(let product of products){%>
+                            <%- include("./component/product-item",{item:product})%>
+                            <%}%>
+                    </div>
+                </div>
+                <!--	End List Product	-->
+                
+                <%- include("./component/pagination",{page,pages,category}) %>
+                
+            </div>
+            
+            <%- include("./layouts/sidebarSite")%>
+            <%- include("./layouts/footerSite")%>
+

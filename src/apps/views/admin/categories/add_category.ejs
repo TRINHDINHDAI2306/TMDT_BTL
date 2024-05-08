@@ -1,0 +1,54 @@
+<%- include("../layout/head",{title:"Add Category"})%>
+<%- include("../layout/header")%>
+<%- include("../layout/sidebar")%>		
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">			
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="/admin/dashboard"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
+				<li><a href="/admin/categories">Quản lý danh mục</a></li>
+				<li class="active">Thêm danh mục</li>
+			</ol>
+		</div><!--/.row-->
+		
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header">Thêm danh mục</h1>
+			</div>
+		</div><!--/.row-->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="col-md-8">
+                            <% if(data && data.error){%>
+                        	<div class="alert alert-danger"><%=data.error%></div>
+                            <%}%>
+                            <form action="/admin/categories/store" role="form" method="post">
+                                <div class="form-group">
+                                    <label for="title">Tên danh mục:</label>
+                                    <input required type="text" id="title" name="title" class="form-control" placeholder="Tên danh mục..." autofocus>
+                                </div>
+                                <div class="form-group">
+                                    <select name="parent_id" class="form-control">
+                                        <option value="" selected>Danh Mục Cha</option>
+                                        <% const renderOptions = (categories, level = 0) => { %>
+                                            <% categories.forEach(item => { %>
+                                                <option value="<%= item.id %>"><%= `${'----'.repeat(level)} ${item.title}` %></option>
+                                                <% if (item.children && item.children.length > 0) { %>
+                                                    <%= renderOptions(item.children, level + 1) %>
+                                                <% } %>
+                                            <% }); %>
+                                        <% } %>
+                                        <%= renderOptions(newCategories) %>
+                                    </select>  
+                                </div>
+                            <button type="submit" name="sbm" class="btn btn-success">Thêm mới</button>
+                            <button type="reset" class="btn btn-default">Làm mới</button>
+                        </div>
+                    	</form>
+                    </div>
+                </div>
+            </div><!-- /.col-->
+	</div>	<!--/.main-->	
+
+    <%- include("../layout/footer")%>		

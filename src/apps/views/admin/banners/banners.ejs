@@ -1,0 +1,93 @@
+<%- include("../layout/head",{title:"Banners Manager"})%>
+<%- include("../layout/header")%>
+<%- include("../layout/sidebar")%>		
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">			
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="/admin/dashboard"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
+				<li class="active">Quản lý Banners</li>
+			</ol>
+		</div><!--/.row-->
+		
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header">Quản lý ảnh Banner</h1>
+			</div>
+		</div><!--/.row-->
+		<div id="toolbar" class="btn-group">
+            <a href="/admin/Banners/create" class="btn btn-success">
+                <i class="glyphicon glyphicon-plus"></i> Thêm ảnh 
+            </a>
+        </div>
+		<div class="row">
+			<div class="col-md-12">
+					<div class="panel panel-default">
+							<div class="panel-body">
+								<table 
+									data-toolbar="#toolbar"
+									data-toggle="table">
+		
+									<thead>
+									<tr>
+										<th data-field="id" data-sortable="true">ID</th>
+										<th>Tên ảnh</th>
+										<th>Ảnh</th>
+										<th>Trạng thái</th>
+										<th>Hành động</th>
+									</tr>
+									</thead>
+									<tbody>											
+										<tr>
+											<%for(let banner of banners){%>
+											<td style=""><%=count++%></td>
+											<td><%=banner.name%></td>
+											<td style="text-align: center;"><img style=" width: 350px; " src="../Uploads/images/<%=banner.image%>" /></td>
+											<td class="form-group">
+												<a href= "/admin/banners/approved-<%=banner.id%>" class="btn <%=banner?.status?'btn-success':'btn-warning'%>"><%=banner?.status?"Đã Hiển thị":"Chưa Hiển thị"%> <i class="glyphicon glyphicon-ok"></i></a>
+											  </td>
+											<td class="form-group">
+												<a href="/admin/banners/edit-<%=banner.id%>" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
+												<a href="javascript:void(0);" class="btn btn-danger" onclick="confirmDelete('<%= banner._id %>')"><i class="glyphicon glyphicon-remove"></i></a>
+											</td>
+										</tr>
+										<%}%>
+									</tbody>
+								</table>
+							</div>
+							<div class="panel-footer">
+								<nav aria-label="Page navigation example">
+									<ul class="pagination">
+										<% if(page >1 ) {%>
+						  <li class="page-item"><a class="page-link" href="/admin/Banners?page=<%=page-1%>">&laquo;</a></li>
+						  <%}%>
+										<%for(let CurrentPage of pages){%>
+						  <%if(CurrentPage==="..."){%>
+						  <li class="page-item <%=page===CurrentPage?'active':''%>"><span><%=CurrentPage %></span></li>
+						  <%} else {%>
+						  <li class="page-item <%=page===CurrentPage?'active':''%>"><a class="page-link" href="/admin/Banners?page=<%=CurrentPage%>"><%=CurrentPage %></a></li>
+						  <%}%>
+										<%}%>
+						  <% if(page < totalPages){%>
+						  <li class="page-item"><a class="page-link" href="/admin/Banners?page=<%=page+1%>">&raquo;</a></li>
+						  <%}%>
+									</ul>
+								</nav>
+							</div>
+						</div>
+			</div>
+		</div><!--/.row-->
+	</div>	<!--/.main-->
+	<script>
+		// hàm cảnh báo xóa
+		const  confirmDelete= (BannerId)=> {
+			var confirmMsg = "Bạn có chắc muốn xóa ảnh này?";
+			if (confirm(confirmMsg)) {
+				window.location.href = "/admin/Banners/delete-" + BannerId;
+				location.reload();
+			}
+		}
+		</script>
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/bootstrap-table.js"></script>	
+	<%- include("../layout/footer")%>		

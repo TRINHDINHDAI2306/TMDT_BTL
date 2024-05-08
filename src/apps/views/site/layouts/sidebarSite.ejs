@@ -1,0 +1,16 @@
+<div id="sidebar" class="col-lg-4 col-md-12 col-sm-12">
+    <div id="banner">
+        <%for(let banner of banners){%>
+            <%if(banner.status){%>
+        <div class="banner-item">
+            <a href="<%=banner.urlBanner%>"><img class="img-fluid" src="../Uploads/images/<%=banner.image%>"></a>
+        </div>
+            <%}%>
+        <%}%>
+
+    </div>
+</div>
+</div>
+</div>
+</div>
+<!--	End Body	-->

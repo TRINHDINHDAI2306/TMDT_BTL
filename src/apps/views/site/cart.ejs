@@ -1,0 +1,113 @@
+<%- include("./layouts/headSite.ejs",{title: "Gio hang"}) %>
+<%- include("./layouts/headerSite.ejs") %>
+<%- include("./layouts/menuSite.ejs") %>
+<%- include("./layouts/sliderSite.ejs") %>
+
+<!--	Cart	-->
+<div id="my-cart">
+  <div class="row">
+    <div class="cart-nav-item col-lg-7 col-md-7 col-sm-12">Thông tin sản phẩm</div>
+    <div class="cart-nav-item col-lg-2 col-md-2 col-sm-12">Tùy chọn</div>
+    <div class="cart-nav-item col-lg-3 col-md-3 col-sm-12">Giá</div>
+  </div>
+  <form action="/update-item-cart" method="post">
+    <%for(let item of cartItems){%>
+    <div class="cart-item row">
+      <div class="cart-thumb col-lg-7 col-md-7 col-sm-12">
+        <img src="../Uploads/images/<%=item.thumbnails[0]%>">
+        <h4><%=item.name%>d</h4>
+      </div>
+      <div class="cart-quantity col-lg-2 col-md-2 col-sm-12">
+        <input name="products[<%=item.id%>][qty]" type="number" id="quantity" class="form-control form-blue quantity" value="<%=item.qty%>" min="1">
+      </div>
+      <div class="cart-price col-lg-3 col-md-3 col-sm-12"><b><%=formatPrice(item.price)%></b><a href="/del-item-cart-<%=item.id%>">Xóa</a></div>
+    </div>
+    <%}%>
+
+                    
+                    <div class="row">
+                    	<div class="cart-thumb col-lg-7 col-md-7 col-sm-12">
+                        	<button id="update-cart" class="btn btn-success" type="submit" name="sbm">Cập nhật giỏ hàng</button>	
+                        </div> 
+                        <div class="cart-total col-lg-2 col-md-2 col-sm-12"><b>Tổng cộng:</b></div> 
+                        <div class="cart-price col-lg-3 col-md-3 col-sm-12"><b><%=formatPrice(cartItems.reduce((total,item)=> total + item.price * item.qty,0))%></b>
+</div>
+</div>
+</form>
+
+</div>
+<!--	End Cart	-->
+
+<!--	Customer Info	-->
+<div id="customer">
+  <form method="post" action="/order">
+    <% if(data && data.error){%>
+    <div class="alert alert-danger">
+      <%=data.error%><a href="/admin/customers/login"> Click Here </a>để có thể đăng nhập!
+      </div>
+    <%}%>
+    <div class="row">
+		<%if(customer){%>
+    <div id="customer-name" class="col-lg-4 col-md-4 col-sm-12">
+      <input placeholder="Họ và tên (bắt buộc)" type="text" name="full_name" class="form-control" value="<%=full_name%>" <%= full_name ? 'readonly' : '' %>>
+    </div>
+    <div id="customer-phone" class="col-lg-4 col-md-4 col-sm-12">
+      <input placeholder="Số điện thoại (bắt buộc)" type="text" name="phone" class="form-control" value="<%=phone%>" <%= phone ? 'readonly' : '' %>>
+    </div>
+    <div id="customer-mail" class="col-lg-4 col-md-4 col-sm-12">
+      <input placeholder="Email (bắt buộc)" type="text" name="email" class="form-control" value="<%=email%>" <%= email ? 'readonly' : '' %>>
+    </div>
+    <div id="customer-add" class="col-lg-12 col-md-12 col-sm-12">
+      <input placeholder="Địa chỉ nhà riêng hoặc cơ quan (bắt buộc)" type="text" name="address" class="form-control" value="<%=address%>" <%= address ? 'readonly' : '' %>>
+    </div>
+    <%}else if(user){%>
+      <div id="customer-name" class="col-lg-4 col-md-4 col-sm-12">
+        <input placeholder="Họ và tên (bắt buộc)" type="text" name="full_name" class="form-control" value="<%=user.email !== 'facebook@gmail.com' || user.email !=='github@gmail.com' ? user.full_name : user.email %>" <%= user.full_name ? 'readonly' : '' %>>
+      </div>
+      <div id="customer-phone" class="col-lg-4 col-md-4 col-sm-12">
+        <input placeholder="Số điện thoại (bắt buộc)" type="text" name="phone" class="form-control" value="">
+      </div>
+      <div id="customer-mail" class="col-lg-4 col-md-4 col-sm-12">
+        <input placeholder="Email (bắt buộc)" type="text" name="email" class="form-control" value="<%=user.email !=='facebook@gmail.com' || user.email !=='github@gmail.com' ? user.email : user.full_name %>" <%= user.email ? 'readonly' : '' %>>
+      </div>
+      <div id="customer-add" class="col-lg-12 col-md-12 col-sm-12">
+        <input placeholder="Địa chỉ nhà riêng hoặc cơ quan (bắt buộc)" type="text" name="address" class="form-control" value="">
+      </div>
+    <%}else{%>
+    <div id="customer-name" class="col-lg-4 col-md-4 col-sm-12">
+      <input placeholder="Họ và tên (bắt buộc)" type="text" name="full_name" class="form-control">
+    </div>
+    <div id="customer-phone" class="col-lg-4 col-md-4 col-sm-12">
+      <input placeholder="Số điện thoại (bắt buộc)" type="text" name="phone" class="form-control">
+    </div>
+    <div id="customer-mail" class="col-lg-4 col-md-4 col-sm-12">
+      <input placeholder="Email (bắt buộc)" type="text" name="email" class="form-control">
+    </div>
+    <div id="customer-add" class="col-lg-12 col-md-12 col-sm-12">
+      <input placeholder="Địa chỉ nhà riêng hoặc cơ quan (bắt buộc)" type="text" name="address" class="form-control">
+    </div>
+    <%}%>
+    </div>
+    <!-- Phuong thuc thanh toan -->
+<div class="row">
+  <div class="by-now col-lg-6 col-md-6 col-sm-12">
+    <button type="submit" class="btn btn-danger">
+      <b>Mua ngay</b>
+      <span>Giao hàng tận nơi siêu tốc</span>
+    </button>
+  </div>
+  <div class="by-now col-lg-6 col-md-6 col-sm-12">
+    <button type="button" class="btn btn-primary">
+      <b>Trả góp Online</b>
+      <span>Vui lòng call (+84) 0988 550 553</span>
+    </button>
+  </div>
+</div>
+</form>
+</div>
+<!--	End Customer Info	-->
+
+</div>
+
+<%- include("./layouts/sidebarSite")%>
+    <%- include("./layouts/footerSite")%>

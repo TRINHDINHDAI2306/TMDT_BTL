@@ -1,0 +1,87 @@
+<%- include("./layouts/headSite",{title:"Information Page"})%>
+<%- include("./layouts/headerSite")%>
+<%- include("./layouts/menuSite") %>
+<%- include("./layouts/sliderSite.ejs") %>
+<%- include("../admin/layout/head.ejs",{title:""})%>
+
+
+
+  <!--/.row-->
+  <div style="margin-top: 20px; margin-bottom: 20px;">
+    <a href="/information/infoCustomer" class="btn btn-primary">Quay lại trang thông tin cá nhân</a>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">Danh sách đơn hàng</h1>
+    </div>
+  </div>
+  <!--/.row-->
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <% for (let order of orders) { %>
+
+          <table  data-toolbar="#toolbar" data-toggle="table" border="2">
+            <thead>
+              <tr>
+                <th class="col-lg-2" data-field="product" data-sortable="true">Tên sản phẩm</th>
+                <th class="col-lg-1" data-field="thumbnail" data-sortable="true">Ảnh sản phẩm</th>
+                <th  class="col-lg-1"  data-field="quantity" data-sortable="true">Số lượng</th>
+                <th  class="col-lg-2" data-field="price" data-sortable="true">Đơn giá</th>
+                <th  class="col-lg-3" data-field="total" data-sortable="true">Tổng tiền</th>
+              </tr>
+            </thead>
+            <tbody>
+                <span>Trạng thái đơn hàng : <b style="font-size: 20px;" class=" btn-<%=order.confirmed ?'success' :'warning'%>" ><%=order.confirmed ? "Đã xác nhận" : "Chưa xác nhận"%></b></span>
+              <% for (let orderDetail of order.items) { %>
+              <tr style="text-align: center;">
+                <td ><span ><%= orderDetail.name %></span></td>
+                <td><%=count++%></td>
+                <td><span><%= orderDetail.qty %></span></td>
+                <td style="text-align: right;"><span><%= formatPrice(orderDetail.price) %></span></td>
+                <% if (orderDetail == order.items[0]) { %>
+                <td style="text-align: right;" rowspan="<%= order.items.length %>"><span><%= formatPrice(order.total_price) %></span></td>
+
+                <% } %>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+          <br>
+          <% } %>
+
+        </div>
+        <div class="panel-footer">
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <%if(page>1){%>
+              <li class="page-item"><a class="page-link" href="/admin/orders?page=<%=page-1%>">&laquo;</a></li>
+              <%}%>
+                                <%for(let num of pages){%>
+              <%if(num==="..."){%>
+              <li class="page-item <%=page===num?'active':''%>"><span><%=num %></span></li>
+              <%} else {%>
+              <li class="page-item <%=page===num?'active':''%>"><a class="page-link" href="/admin/orders?page=<%=num%>"><%=num %></a></li>
+              <%}%>
+                                <%}%>
+              <%if(page < totalPages){%>
+              <li class="page-item"><a class="page-link" href="/admin/orders?page=<%=page+1%>">&raquo;</a></li>
+              <%}%>
+                            </ul>
+                        </nav>                    </div>
+				</div>
+			</div>
+		</div><!--/.row-->	
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-table.js"></script>	
+
+
+
+
+
+</div>
+
+<%- include("./layouts/sidebarSite")%>
+    <%- include("./layouts/footerSite")%>

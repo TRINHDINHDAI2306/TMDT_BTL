@@ -1,0 +1,206 @@
+<%- include("../layout/head",{title:"Products Recycle_Bin"})%>
+<%- include("../layout/header")%>
+<%- include("../layout/sidebar")%>
+
+
+
+
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+  <div class="row">
+    <ol class="breadcrumb">
+      <li><a href="/admin/dashboard"><svg class="glyph stroked home">
+            <use xlink:href="#stroked-home"></use>
+          </svg></a></li>
+      <li class="active">Danh sách sản phẩm</li>
+    </ol>
+  </div>
+  <!--/.row-->
+  <%if(userValidate.role == "admin"){%>
+
+  <div id="row">
+    <a class="btn btn-warning" href="/admin/recycle_bin/products">Danh sách sản phẩm</a>
+    <a class="btn btn-warning" href="/admin/recycle_bin/categories">Danh sách danh mục</a>
+    <a class="btn btn-warning" href="/admin/recycle_bin/users">Danh sách thành viên</a>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">Danh sách sản phẩm</h1>
+    </div>
+  </div>
+  <!--/.row-->
+  <div id="toolbar" class="btn-group">
+    <button id="moveProducts" class="btn btn-success">Phục hồi</button>
+    <button id="deleteSelected" class="btn btn-danger">Xóa vĩnh viễn</button>
+  </div>
+  <div  id="deleteSuccessMessage" style="display: none;" class="alert alert-success">Đã xóa thành công!</div>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <table data-toolbar="#toolbar" data-toggle="table">
+
+            <thead>
+              <tr>
+                <th class="col-lg-1" data-field="checkbox" data-sortable="true"></th>
+                <th class="col-lg-1" data-field="id" data-sortable="true">ID</th>
+                <th class="col-lg-2" data-field="name" data-sortable="true">Tên sản phẩm</th>
+                <th class="col-lg-2" data-field="cat_id" data-sortable="true">Danh mục</th>
+                <th class="col-lg-1" data-field="price" data-sortable="true">Giá</th>
+                <th class="col-lg-4">Ảnh sản phẩm</th>
+                <th class="col-lg-1">Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody>
+              <%for(let product of productsBin){%>
+      <tr>
+        <td><input type="checkbox" class="myCheckbox" data-id="<%= product._id %>"></td>
+        <td><%=count++%></td>
+        <td><%=product.name%></td>
+        <td><%=product.cat_id?.title?product.cat_id.title:"" %></td>
+        <td><%=Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)%></td>
+        <td style="text-align: center">
+          <!-- Hiển thị ảnh lớn ở trên -->
+          <div class="carousel slide" id="carousel<%= product._id %>" data-ride="carousel">
+              <div class="carousel-inner">
+                  <div class="carousel-item active">
+                      <img width="mx-auto" height="200" src="../Uploads/images/<%= product.thumbnails[0] %>" class="d-block mx-auto w-50" alt="Large Slide 0">
+                  </div>
+              </div>
+              <a class="carousel-control-prev" href="#carousel<%= product._id %>" role="button" data-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Previous</span>
+              </a>
+              <a class="carousel-control-next" href="#carousel<%= product._id %>" role="button" data-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Next</span>
+              </a>
+          </div>
+      
+          <!-- Hiển thị các ảnh nhỏ bên dưới -->
+          <div class="row mt-3">
+              <% product.thumbnails.forEach((thumbnail, index) => { %>
+                  <div class="col-md-2">
+                      <img src="../Uploads/images/<%= thumbnail %>" class="img-thumbnail" alt="Thumbnail <%= index + 1 %>" onclick="changeLargeImage('<%= product._id %>','<%= thumbnail %>')" style="cursor: pointer;">
+                  </div>
+              <% }); %>
+          </div>
+      </td>        <td><span class="label label-<%=product.is_stock===true?'success':'danger'%>"><%=product.is_stock===true?'Con hang':'Het hang'%></span></td>
+          <%}%>
+      </tr>
+      <script>
+        const changeLargeImage = (productId, thumbnail) => {
+            $(`#carousel${productId} .carousel-inner`).html(`<div class="carousel-item active"><img src="../Uploads/images/${thumbnail}" class="d-block mx-auto width="mx-auto" height="200 " w-50" alt="Large Slide"></div>`);
+        }
+    </script>
+      <script>
+        // Hiển thị thông báo xóa thành công
+        const showDeleteSuccessMessage = () => {
+          const deleteSuccessMessage = document.getElementById("deleteSuccessMessage");
+          deleteSuccessMessage.style.display = "block";
+          setTimeout(() => {
+            location.reload(); // sau khi xóa reload trang
+            deleteSuccessMessage.style.display = "none";
+          }, 1000); // Hiden after 1 seconds
+        };
+        // bắt sự kiện Thay đổi trạng thái checkbox
+        document.querySelectorAll(".myCheckbox").forEach(checkbox => {
+          checkbox.addEventListener("change", () => {
+            updateCheckedIds();
+            updateChecks();
+          });
+        });
+
+        // Update trạng thái checkbox
+        const updateCheckedIds = () => {
+          const checkedIds = [];
+          document.querySelectorAll(".myCheckbox:checked").forEach(checkbox => {
+            checkedIds.push(checkbox.getAttribute("data-id"));
+          });
+          sendCheckedIds(checkedIds);
+        }
+        // Gửi yêu cầu về server (AJAX) sự kiện xóa
+        const sendCheckedIds = (checkedIds) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open("POST", "/admin/recycle_bin/products/deleteAll", true); // open() nhận vào 3 tham số (phương thức, url xử lý, async). true: bất đồng bộ
+          xhr.setRequestHeader("Content-Type", "application/json"); // dữ liệu gửi về dạng JSON
+          xhr.send(JSON.stringify({
+            checkedIds: checkedIds
+          }));
+        }
+
+        // Thêm hàm hiển thị hộp thoại xác nhận
+        const confirmDelete = () => {
+          return confirm("Sản phẩm sau khi xóa sẽ không thể khôi phục. Bạn có chắc chắn muốn xóa các sản phẩm đã chọn? ");
+        }
+
+        // Bắt sự kiện click nút Xóa đã chọn
+        document.getElementById("deleteSelected").addEventListener("click", () => {
+          if (confirmDelete()) { // Nếu người dùng xác nhận muốn xóa
+            updateCheckedIds();
+            showDeleteSuccessMessage(); // hiển thị thông báo
+          }
+        });
+
+          // Update trạng thái checkbox cho button di chuyển
+          const updateChecks = () => {
+          const checkedProductIds = [];
+          document.querySelectorAll(".myCheckbox:checked").forEach(checkbox => {
+            checkedProductIds.push(checkbox.getAttribute("data-id"))
+          });
+          // Gửi yêu cầu di chuyển các sản phẩm đã chọn về danh mục mới
+            moveBinToProducts(checkedProductIds);
+        }
+
+        //Gửi yêu cầu về server(AJAX) về tính năng di chuyển
+        const moveBinToProducts = (productIds) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open("POST", "/admin/recycle_bin/products/move", true);
+          xhr.setRequestHeader("Content-Type", "application/json")
+          xhr.send(JSON.stringify({
+            productIds
+          }))
+        }
+        // Thêm hàm hiển thị hộp thoại xác nhận
+        const confirmMove = () => {
+          return confirm("Bạn có chắc chắn muốn phục hồi các sản phẩm đã chọn?");
+        }
+
+        //Bắt thuộc tính click Di chuyển
+        document.getElementById("moveProducts").addEventListener("click", () => {
+          if (confirmMove()) {
+            updateChecks();
+            location.reload();
+          }
+        })
+
+      </script>
+
+
+        </tbody>
+						</table>
+                    </div>
+                    <div class="panel-footer">
+                        <nav aria-label="Page navigation example">
+Phan trang
+                        </nav>
+                    </div>
+				</div>
+			</div>
+		</div><!--/.row-->	
+	</div>	<!--/.main-->
+
+
+  <%}else{%>
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 style="text-align: center;" class="page-header">Bạn không có quyền xem nội dung tại đây !</h1>
+      </div>
+    </div>
+    <%}%>
+    
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-table.js"></script>	
+
+    <%- include("../layout/footer")%>

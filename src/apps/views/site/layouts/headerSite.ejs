@@ -1,0 +1,56 @@
+<!--	Header	-->
+
+<div id="header">
+  <div class="container">
+    <div class="row">
+      <div id="logo" class="col-lg-3 col-md-3 col-sm-12">
+        <h1><a href="/"><img class="img-fluid" src="../Uploads/images/<%=config.logo_header%>"></a></h1>
+      </div>
+      <div id="search" class="col-lg-4 col-md-6 col-sm-12">
+        <form id="formSearchHeader" action="/search" class="form-inline  position-relative" style="z-index: 1;">
+            <input name="keyword" class="form-control mt-3" autocomplete="off" placeholder="Search" type="text" placeholder="Tìm kiếm" aria-label="Search">
+            <div class="autocom-box position-absolute bg-white p-3 d-none" style="top: 44px;
+            list-style: none;
+            width: 100%;">
+              <!-- <li>keyword 1</li>
+              <li>keyword 2</li>
+              <li>keyword 3</li> -->
+            </div>
+            <button class="btn btn-danger mt-3" type="submit">Tìm kiếm</button>
+          </form>
+      </div>
+      <div id="cart" class="col-lg-2 col-md-3 col-sm-12">
+        <a class="mt-4 mr-2" href="/cart">giỏ hàng</a><span class="mt-3"><%= cartItems.reduce((total,item)=> total + item.qty,0)%></span>
+      </div>
+      <div style="height: 40px;text-align: right; padding-top: 10px; display:flex; gap: 5px; margin-top:2px;" class="col-lg-3 dropdown">
+        <%if(!user && !customer){%>
+        <a style="color: white; font-weight: bold;" href="/admin/customers/register">Đăng ký</a><br />
+        <a style="color: white; font-weight: bold;" href="/admin/customers/login">Đăng nhập</a>
+        <%} else { %>
+          <% if (user) { %>
+            <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+             <span style="color: rgb(255, 170, 0);">Thành viên</span> : <%=user.email !=="facebook@gmail.com" && user.email !=="github@gmail.com" ? user.email : user.full_name %>
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="/admin/dashboard">Trang quản trị</a>
+              <a class="dropdown-item" href="/information/infoCustomer">Hồ sơ cá nhân</a>
+              <a class="dropdown-item" href="/admin/logout">Đăng xuất</a>
+            </div>
+          <% } else if (customer && customer.email) { %>
+            <img style="border-radius: 50%; " src="<%=customer.avatar%>" alt="">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"><span style="color: rgb(255, 136, 0);">Khách hàng: </span> <%= customer.full_name %>
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="/information/infoCustomer">Hồ sơ cá nhân</a>
+              <a class="dropdown-item" href="/admin/customers/logout">Đăng xuất</a>
+            </div>
+          <% } %>
+        <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+<div type="hidden" id="data-container" data-name-products="<%= JSON.stringify(nameProducts) %>" data-thumbnail-products="<%= JSON.stringify(thumbnailProducts) %>"></div>
+
+<%-include("../component/filterForm.ejs")%>
+<!--	End Header	-->

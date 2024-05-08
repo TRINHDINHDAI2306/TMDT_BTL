@@ -1,0 +1,77 @@
+<%- include("./js/head.ejs") %>
+
+  <div class="container">
+    <section id="content">
+      <form action="/forget/verify" method="post">
+        <h1>Xác nhận OTP</h1>
+        <% if (data && data.error) { %>
+          <div class="error">
+            <span>
+              <%= data.error %>
+            </span>
+          </div>
+          <% } %>
+            <div class="notify">Mã OTP đã được gửi đến <%=email%>
+            </div>
+            <div class="icon">
+              <span><i class="fa-regular fa-envelope fa-2xl"></i></span>
+              <div class="email">
+                <%=email%>
+              </div>
+            </div>
+
+            <div class="icon wrapper-otp">
+              <span style="left: 20px; top: 14px;">
+                <i class="fas fa-key fa-2xl"></i>
+              </span>
+              <input type="text" name="otp" placeholder="OTP" id="otp" />
+            </div>
+
+            <div>
+              <input id="btnNext" type="submit" value="Tiếp tục" />
+            </div>
+      </form>
+      <!-- form -->
+      <div class="button">
+        <span>Khách hàng</span>
+      </div>
+      <!-- button -->
+    </section>
+    <!-- content -->
+  </div>
+  <!-- container -->
+  <script>
+    document.getElementById("otp").onkeyup = (e) => {
+      if (e.target.value) {
+        document.getElementById("btnNext").style.background = "rgb(48, 165, 255)";;
+        document.getElementById("btnNext").style.border = "1px solid #2494d5";
+        document.getElementById("btnNext").style.cursor = "pointer";
+      }
+      else {
+        document.getElementById("btnNext").style.background = "#ddd";;
+        document.getElementById("btnNext").style.border = "1px solid";
+        document.getElementById("btnNext").style.cursor = "no-drop";
+      }
+      //rgb(48, 165, 255)
+    }
+    document.getElementById("btnNext").onclick = (e) => {
+      if (!document.getElementById("otp").value) {
+        e.preventDefault();
+      }
+      else {
+        document.getElementById("btnNext").style.cursor = "pointer";
+      }
+    }
+    function popToast() {
+      document.querySelector(".notify").style = null;
+      document.querySelector(".notify").style.visibility = 'visible';
+      document.querySelector(".notify").style.animation = "fadein 0.5s, fadeout 0.5s 2.5s forwards";
+      document.querySelector(".notify").after(newToast);
+      newToast = toast.cloneNode(true);
+    }
+    setTimeout(popToast(), 5000)
+
+  </script>
+</body>
+
+</html>

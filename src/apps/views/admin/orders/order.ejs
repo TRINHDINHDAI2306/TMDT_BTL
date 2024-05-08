@@ -1,0 +1,184 @@
+<%- include("../layout/head",{title:"Orders Manager"})%>
+<%- include("../layout/header")%>
+<%- include("../layout/sidebar")%>
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+  <div class="row">
+    <ol class="breadcrumb">
+      <li><a href="/admin/dashboard"><svg class="glyph stroked home">
+            <use xlink:href="#stroked-home"></use>
+          </svg></a></li>
+      <li class="active">Danh sách sản phẩm</li>
+    </ol>
+  </div>
+  <!--/.row-->
+
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">Danh sách đơn hàng</h1>
+    </div>
+  </div>
+  <div id="deleteAlert" class="alert alert-danger" style="display: none; text-align: center; font-size: 20px;">
+    Không có mục nào được chọn để xóa.
+  </div>
+  <!--/.row-->
+  <div id="toolbar" class="btn-group">
+    <%if(userValidate.role == "admin"){%>
+    <button id="deleteSelected" class="btn btn-danger">Xóa nhiều mục</button>
+    <%}%>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <table data-toolbar="#toolbar" data-toggle="table">
+            <thead>
+              <tr>
+                <th data-field="checkbox" data-sortable="true"></th>
+                <th data-field="id" data-sortable="true">ID</th>
+                <th data-field="name" data-sortable="true">
+                  <p style="text-align: center;">Thông tin người dùng</p>
+                </th>
+                <th data-field="product" data-sortable="true">Tên sản phẩm</th>
+                <th data-field="quantity" data-sortable="true">Số lượng</th>
+                <th data-field="price" data-sortable="true">Đơn giá</th>
+                <th data-field="total" data-sortable="true">Tổng tiền</th>
+                <th data-field="action" data-sortable="true">Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (let order of orders) { %>
+    <% for (let orderDetail of order.items) { %>
+    <tr>
+      <% if (orderDetail == order.items[0]) { %>
+      <td rowspan="<%= order.items.length %>">
+        <input type="checkbox" class="myCheckbox" data-id="<%= order._id.toString() %>">
+      </td>
+      <td rowspan="<%= order.items.length %>"><%=count++%></td>
+      <td rowspan="<%= order.items.length %>">
+        <ul>
+          <li>Họ tên: <%= order.full_name %></li>
+          <li>Phone: <%= order.phone %></li>
+          <li>Address: <%= order.address %></li>
+          <li>Email: <%= order.email %></li>
+        </ul>
+      </td>
+      <% } %>
+      <td><span><%= orderDetail.name %></span></td>
+      <td><span><%= orderDetail.qty %></span></td>
+      <td><span><%= formatPrice(orderDetail.price) %></span></td>
+      <% if (orderDetail == order.items[0]) { %>
+      <td rowspan="<%= order.items.length %>"><span><%= formatPrice(order.total_price) %></span></td>
+      <td rowspan="<%= order.items.length %>" class="form-group">
+        <%if(userValidate.role == "admin"){%>
+          <a href= "/admin/orders/approved-<%=order._id%>" class="btn <%=order?.confirmed?'btn-success':'btn-warning'%>"><%=order?.confirmed?"Đã xác nhận":"Chưa xác nhận"%> <i class="glyphicon glyphicon-ok"></i></a>
+
+         <a href="javascript:void(0);" class="btn btn-danger" onclick="confirmDeleteOne('<%= order._id %>')"><i class="glyphicon glyphicon-remove"></i></a>
+        <%}%>
+                </td>
+                <% } %>
+      <td>
+        <!-- Add action buttons here if needed -->
+      </td>
+    </tr>
+    <% } %>
+    <% } %>
+    </tbody>
+    </table>
+
+  </div>
+  <div class="panel-footer">
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <%if(page>1){%>
+        <li class="page-item"><a class="page-link" href="/admin/orders?page=<%=page-1%>">&laquo;</a></li>
+        <%}%>
+                                <%for(let num of pages){%>
+        <%if(num==="..."){%>
+        <li class="page-item <%=page===num?'active':''%>"><span><%=num %></span></li>
+        <%} else {%>
+        <li class="page-item <%=page===num?'active':''%>"><a class="page-link" href="/admin/orders?page=<%=num%>"><%=num %></a></li>
+        <%}%>
+                                <%}%>
+        <%if(page < totalPages){%>
+        <li class="page-item"><a class="page-link" href="/admin/orders?page=<%=page+1%>">&raquo;</a></li>
+        <%}%>
+                            </ul>
+                        </nav>                    </div>
+				</div>
+			</div>
+		</div><!--/.row-->	
+	</div>	<!--/.main-->
+	<script>
+		// hàm cảnh báo xóa   
+		const confirmDeleteOne = (OrderId) => {
+		  const confirmMsg = "Bạn có chắc muốn xóa Đơn hàng này?";
+		  if (confirm(confirmMsg)) {
+			window.location.href = "/admin/orders/delete-" + OrderId;
+			location.reload();
+		  }
+		}
+	  </script>
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-table.js"></script>	
+
+    <%- include("../layout/footer")%>
+
+    <script>
+      // bắt sự kiện Thay đổi trạng thái checkbox
+      document.querySelectorAll(".myCheckbox").forEach(checkbox => {
+        checkbox.addEventListener("change", () => {
+          updateCheckedIds();
+        });
+      });
+
+      // Update trạng thái checkbox
+      const updateCheckedIds = () => {
+        const checkedIds = [];
+        document.querySelectorAll(".myCheckbox:checked").forEach(checkbox => {
+          checkedIds.push(checkbox.getAttribute("data-id"));
+        });
+        sendCheckedIds(checkedIds);
+      }
+      // Gửi yêu cầu về server (AJAX)
+      const sendCheckedIds = (checkedIds) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/admin/orders/deleteAll", true); // open() nhận vào 3 tham số (phương thức, url xử lý, async). true: bất đồng bộ
+        xhr.setRequestHeader("Content-Type", "application/json"); // dữ liệu gửi về dạng JSON
+        xhr.send(JSON.stringify({
+          checkedIds: checkedIds
+        }));
+      }
+
+      // Thêm hàm hiển thị hộp thoại xác nhận
+      const confirmDelete = () => {
+        return confirm("Bạn có chắc chắn muốn xóa các bình luận đã chọn?");
+      }
+
+      // hiển thị thông báo khi xóa ko checked
+      const showDeleteAlert = () => {
+        const deleteAlert = document.getElementById("deleteAlert");
+        deleteAlert.style.display = "block";
+
+        // Ẩn thông báo sau một khoảng thời gian
+        setTimeout(() => {
+          deleteAlert.style.display = "none";
+        }, 1000); // 3 giây
+      };
+
+      // Bắt sự kiện click nút Xóa đã chọn
+      document.getElementById("deleteSelected").addEventListener("click", () => {
+        const checkedCheckboxes = document.querySelectorAll(".myCheckbox:checked");
+
+        if (checkedCheckboxes.length === 0) {
+          // Nếu không có mục nào được chọn, hiển thị thông báo
+          showDeleteAlert();
+        } else {
+          // Nếu có mục được chọn, xác nhận hành động xóa
+          if (confirmDelete()) {
+            updateCheckedIds();
+            location.reload(); // sau khi xóa reload trang
+          }
+        }
+      });
+    </script>

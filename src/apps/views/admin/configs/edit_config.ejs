@@ -1,0 +1,100 @@
+<%- include("../layout/head",{title:"Edit Product"})%>
+<%- include("../layout/header")%>
+<%- include("../layout/sidebar")%>
+
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+  <div class="row">
+    <ol class="breadcrumb">
+      <li><a href="/admin/dashboard"><svg class="glyph stroked home">
+            <use xlink:href="#stroked-home"></use>
+          </svg></a></li>
+      <li><a href="/admin/configs">Cấu hình</a></li>
+      <li class="active">Thông tin chung</li>
+    </ol>
+  </div>
+  <!--/.row-->
+
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">Thông tin chung</h1>
+    </div>
+  </div>
+  <!--/.row-->
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="col-md-12">
+            <form action="/admin/configs/store/<%=config._id%>" role="form" method="post" enctype="multipart/form-data">
+              <div class="form-group">
+                <label>Giới thiệu chung</label>
+                <textarea name="body" class="form-control" autofocus rows="8"><%=config.body%></textarea>
+              </div>
+
+              <div class="form-group">
+                <label>Địa chỉ</label>
+                <textarea name="address" class="form-control formatted-text" rows="5"><%=config.address%></textarea>
+
+              </div>
+              <div class="form-group">
+                <label>Dịch vụ</label>
+                <textarea name="service" class="form-control" rows="5"><%=config.service%></textarea>
+
+              </div>
+              <div class="form-group">
+                <label>Hotline</label>
+                <input type="text" name="hotline" value='<%=config.hotline%>' class="form-control">
+              </div>
+              <div class="form-group">
+                <label>email</label>
+                <input type="text" name="email" value=<%=config.email%> class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Logo Header</label>
+                <input type="file" name="logo_header" onchange="previewImage(this,document.querySelector('.preview-header'))">
+                <br>
+                <div class="preview-header">
+                  <img width="160" src="../Uploads/images/<%=config.logo_header%>">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Logo Footer</label>
+                <input type="file" name="logo_footer" onchange="previewImage(this,document.querySelector('.preview-footer'))">
+                <br>
+                <div class="preview-footer">
+                  <img width="160" src="../Uploads/images/<%=config.logo_footer%>">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Thông tin đăng ký kinh doanh</label>
+                <input type="text" name="register" value='<%=config.register%>' class="form-control">
+              </div>
+              <button type="submit" name="sbm" class="btn btn-primary">Cập nhật</button>
+              <button type="reset" class="btn btn-default">Làm mới</button>
+            </form>
+          </div>
+        </div>
+      </div><!-- /.col-->
+    </div><!-- /.row -->
+
+  </div>
+  <!--/.main-->
+  <script>
+    const previewImage = (input,previewContainer) => {
+      const file = input.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.classList.add("preview-img");
+          // Xóa ảnh cũ trước khi thêm ảnh mới
+          previewContainer.innerHTML = "";
+          previewContainer.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  </script>
+  <%- include("../layout/footer")%>

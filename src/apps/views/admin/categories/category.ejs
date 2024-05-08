@@ -1,0 +1,112 @@
+<%- include("../layout/head",{title:"Category Manager"})%>
+<%- include("../layout/header")%>
+<%- include("../layout/sidebar")%>		
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">			
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="/admin/dashboard"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
+				<li class="active">Quản lý danh mục</li>
+			</ol>
+		</div><!--/.row-->
+		
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header">Quản lý danh mục</h1>
+			</div>
+		</div><!--/.row-->
+		<%if(userValidate.role == "admin"){%>
+		<div id="toolbar" class="btn-group">
+            <a href="/admin/categories/create" class="btn btn-success">
+                <i class="glyphicon glyphicon-plus"></i> Thêm danh mục
+            </a>
+        </div>
+		<%}%>
+		<div class="row">
+			<div class="col-md-12">
+					<div class="panel panel-default">
+							<div class="panel-body">
+								<table 
+									data-toolbar="#toolbar"
+									data-toggle="table">
+		
+									<thead>
+									<tr>
+										<th data-field="id" data-sortable="true">ID</th>
+										<th>Tên danh mục cha</th>
+										<th>Tên danh mục con</th>
+										<th>Số sản phẩm</th>
+										<th>Hành động</th>
+									</tr>
+									</thead>
+									<tbody>
+										<% for (let category of categories) { %>
+											<tr>
+												<td><%= count++ %></td>
+												<% if (category.parent_id && category.parent_id !== "") { %>
+													<td><%= parentCategoryTitle(category.parent_id) %></td>
+													<td><%= category.title %></td>
+												<% } else { %>
+													<td><%= category.title %></td>
+													<td></td>
+												<% } %>
+												<td>
+													<%=category.productsCount %>
+												</td>
+											<td class="form-group">
+												<%if(userValidate.role == "admin"){%>
+												<a href="/admin/categories/edit/<%=category._id%>" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
+												<a href="javascript:void(0);" class="btn btn-danger" onclick="confirmDeleteOne('<%= category._id %>')"><i class="glyphicon glyphicon-remove"></i></a>
+												<%}else{%>
+													<p>Bạn không có quyền edit,delete</p>
+													<%}%>
+											</td>
+
+										</tr>
+										<%}%>
+									</tbody>
+									<% function parentCategoryTitle(parentId) { %>
+										<% for (let parentCategory of parentCategories) { %>
+											<% if (parentCategory._id.toString() === parentId.toString()) { %>
+												<%= parentCategory.title %>
+											<% } %>
+										<% } %>
+									<% } %>
+								</table>
+							</div>
+							<div class="panel-footer">
+								<nav aria-label="Page navigation example">
+									<ul class="pagination">
+										<%if(page>1) {%>
+										<li class="page-item"><a class="page-link" href="/admin/categories?page=<%=page-1%>">&laquo;</a></li>
+										<%}%>
+										<%for(let CurrentPage of pages) {%>
+											<%if(CurrentPage==="..."){%>
+												<li class="page-item <%=page===CurrentPage?'active':''%>"><span><%=CurrentPage%></span></li>
+											<%} else {%>
+												<li class="page-item <%=page===CurrentPage?'active':''%>"><a class="page-link" href="/admin/categories?page=<%=CurrentPage%>"><%=CurrentPage%></a></li>
+												<%}%>
+										<%}%>
+										<%if(page< totalPages) {%>
+										<li class="page-item"><a class="page-link" href="/admin/categories?page=<%=page+1%>">&raquo;</a></li>
+										<%}%>
+									</ul>
+								</nav>
+							</div>
+						</div>
+			</div>
+		</div><!--/.row-->
+	</div>	<!--/.main-->
+	<script>
+		// hàm cảnh báo xóa   
+		const confirmDeleteOne = (categoryId) => {
+		  const confirmMsg = "Bạn có chắc muốn xóa Danh mục này? Danh mục sẽ được chuyển về thùng rác";
+		  if (confirm(confirmMsg)) {
+			window.location.href = "/admin/Categories/delete/" + categoryId;
+			location.reload();
+		  }
+		}
+	  </script>
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/bootstrap-table.js"></script>	
+	<%- include("../layout/footer")%>		

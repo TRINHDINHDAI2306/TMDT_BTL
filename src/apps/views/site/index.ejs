@@ -1,0 +1,32 @@
+<%- include("./layouts/headSite",{title:"Home Page"})%>
+<%- include("./layouts/headerSite")%>
+<%- include("./layouts/menuSite") %>
+<%- include("./layouts/sliderSite.ejs") %>
+
+<!--	Feature Product	-->
+<div class="products">
+  <h3>Sản phẩm nổi bật</h3>
+  <div class="product-list card-deck">
+    <% for(let item of featured) {%>
+    <%- include("./component/product-item",{item})%>
+    <%}%>
+  </div>
+</div>
+<!--	End Feature Product	-->
+
+
+<!--	Latest Product	-->
+<div class="products">
+  <h3>Sản phẩm mới</h3>
+  <div class="product-list card-deck">
+    <% for(let item of latest){%>
+    <%- include("./component/product-item",{item})%>
+    <%}%>
+  </div>
+</div>
+<!--	End Latest Product	-->
+
+</div>
+
+<%- include("./layouts/sidebarSite")%>
+    <%- include("./layouts/footerSite")%>

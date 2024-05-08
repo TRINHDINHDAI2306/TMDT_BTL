@@ -1,0 +1,52 @@
+<div class="ct-form-wrapp"> 
+    <div class="ct-form-title" style="margin-bottom: 10px;">
+      <span >Bộ lọc và tìm kiếm:  </span><strong><%=find_total_products%> sản phẩm</strong>
+    </div>
+    <form form-params="filter" action="" class="ct-form-group">
+
+
+    <div style="max-width: 300px;" class="ct-select" >
+      <select name="is_stock">
+        <option value="disabled" disabled selected>--Trạng thái--</option>
+        <% for( let status of Object.values(filterFormData.status) ) { %>
+            <option value="<%= status.is_stock %>" <%= status.active === 'true' ? 'selected' : '' %>><%= status.title %></option>
+        <%}%>
+      </select>
+      <span class="ct-select-arrow"></span>
+    </div>
+    <div style="max-width: 300px;" class="ct-select" >
+      <select name="cat_id">
+        <option value="disabled" disabled selected>--danh mục sản phẩm--</option>
+        <option value="all">Tất cả</option>
+        <% function renderOptions(categories, level = 0) { %>
+            <% categories.forEach(function(item) { %>
+              <option value="<%= item.id %>"><%= `${'----'.repeat(level)} ${item.title}` %></option>
+              <% if (item.children && item.children.length > 0) { %>
+                <%= renderOptions(item.children, level + 1) %>
+              <% } %>
+            <% }); %>
+          <% } %>
+          
+          <%= renderOptions(categories) %>
+      </select>
+      <span class="ct-select-arrow"></span>
+    </div>
+    <div style="max-width: 200px;" class="ct-select" >
+      <select name="sort_key">
+        <option value="disabled" disabled selected>--Sắp xếp sản phẩm--</option>
+        <option value="increment"  >Giá tăng dần</option>
+        <option value="decrement"  >Giá giảm dần</option>
+ 
+      </select>
+      <span class="ct-select-arrow"></span>
+    </div>
+    
+    <input type="text" name="keyword" class="ct-form-input" value="" placeholder="Tìm kiếm sản phẩm...">
+
+    <button class="ct-form-button btn btn-warning" type="submit">Tìm kiếm</button>
+      <% if (Object.entries(filterFormData.find).length > 0) { %>
+        <button class="ct-form-button ct-form-button-del" >Xóa</button>
+
+      <% } %>
+  </form>
+  </div>
