@@ -40,7 +40,7 @@
 
 <!--	Customer Info	-->
 <div id="customer">
-  <form method="post" action="/order">
+  <form method="post" action="/order/create_payment_url">
     <% if(data && data.error){%>
     <div class="alert alert-danger">
       <%=data.error%><a href="/admin/customers/login"> Click Here </a>để có thể đăng nhập!
@@ -73,6 +73,7 @@
       <div id="customer-add" class="col-lg-12 col-md-12 col-sm-12">
         <input placeholder="Địa chỉ nhà riêng hoặc cơ quan (bắt buộc)" type="text" name="address" class="form-control" value="">
       </div>
+
     <%}else{%>
     <div id="customer-name" class="col-lg-4 col-md-4 col-sm-12">
       <input placeholder="Họ và tên (bắt buộc)" type="text" name="full_name" class="form-control">
@@ -87,15 +88,59 @@
       <input placeholder="Địa chỉ nhà riêng hoặc cơ quan (bắt buộc)" type="text" name="address" class="form-control">
     </div>
     <%}%>
-    </div>
     <!-- Phuong thuc thanh toan -->
+    <span class="p-3 w-100">Phương thức thanh toán</span>
+    <div class="p-3 row w-100 gap-3">
+      <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+          <div class="d-flex align-items-center border rounded p-2">
+            <label for="vnpay" class=" d-flex align-items-center flex-grow-1 mb-0" style="gap: 12px;" >
+              <input type="radio" name="payment" id="vnpay" value="vnpay">
+              <img src="https://shopdunk.com/Plugins/Payments.VNPay/logo.jpg" style="width: 36px; height: 36px; object-fit: cover;" alt="vnpay">
+              <span class=" d-flex align-items-center">Thanh toán VNPay</span>
+            </label>
+          </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+        <div class="d-flex align-items-center border rounded p-2">
+          <label for="momo" class=" d-flex align-items-center flex-grow-1 mb-0" style="gap: 12px;" >
+            <input type="radio" name="payment" id="momo" value="momo">
+            <img src="https://shopdunk.com/Plugins/Payments.VNPay/logo.jpg" style="width: 36px; height: 36px; object-fit: cover;" alt="vnpay">
+            <span class=" d-flex align-items-center">Thanh toán MOMO</span>
+          </label>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="d-flex align-items-center border rounded p-2">
+          <label for="qr" class=" d-flex align-items-center flex-grow-1 mb-0" style="gap: 12px;" >
+            <input type="radio" name="payment" id="qr" value="qr">
+            <img src="https://shopdunk.com/Plugins/Payments.VNPay/logo.jpg" style="width: 36px; height: 36px; object-fit: cover;" alt="vnpay">
+            <span class=" d-flex align-items-center">Thanh toán QR</span>
+          </label>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="d-flex align-items-center border rounded p-2">
+          <label for="atm" class=" d-flex align-items-center flex-grow-1 mb-0" style="gap: 12px;" >
+            <input type="radio" name="payment" id="atm" value="atm">
+            <img src="https://shopdunk.com/Plugins/Payments.VNPay/logo.jpg" style="width: 36px; height: 36px; object-fit: cover;" alt="vnpay">
+            <span class=" d-flex align-items-center">Thanh toán ATM</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    </div>
+  
+    
 <div class="row">
   <div class="by-now col-lg-6 col-md-6 col-sm-12">
-    <button type="submit" class="btn btn-danger">
+    <button id="btn-bank" type="submit" class="btn btn-danger">
       <b>Mua ngay</b>
       <span>Giao hàng tận nơi siêu tốc</span>
     </button>
   </div>
+  <script>
+    
+  </script>
   <div class="by-now col-lg-6 col-md-6 col-sm-12">
     <button type="button" class="btn btn-primary">
       <b>Trả góp Online</b>
