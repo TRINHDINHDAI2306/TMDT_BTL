@@ -6,9 +6,11 @@
 <body>
 
 <p>
-    <b>Khách hàng:</b><%=full_name%><br>
+    <b>Mã đơn hàng:</b> <%=orderId%><br>
+    <b>Khách hàng:</b> <%=full_name%><br>
     <b>Điện thoại:</b> <%=phone%><br>
-    <b>Địa chỉ:</b><%=address%><br>
+    <b>Email:</b> <%=email%><br>
+    <b>Địa chỉ:</b> <%=address%><br>
 </p>
 
 <table border="1" cellspacing="0" cellpadding="10" bordercolor="#305eb3" width="100%">
@@ -17,22 +19,18 @@
         <td width="10%"><b><font color="#FFFFFF">Số lượng</font></b></td>
         <td width="20%"><b><font color="#FFFFFF">Tổng tiền</font></b></td>
     </tr>
-    <%for(let item of items){%>
+    <% for(let item of items){%>
     <tr>
     	<td width="70%"><%=item.name%></td>
         <td width="10%"><%=item.qty%></td>
-        <td width="20%"><%=Intl
-            .NumberFormat('vi-VN', { style: 'currency', currency: 'VND' })
-            .format(item.price)%></td>
+        <td width="20%"><%=Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.qty*item.price).replace('₫', 'VND')%></td>
     </tr>
-  <%}%>
+    <% }%>
     <tr>
     	<td colspan="2" width="70%"></td>
-        <td width="20%"><b><font color="#FF0000"><%=Intl
-            .NumberFormat('vi-VN', { style: 'currency', currency: 'VND' })
-            .format(items.reduce((total,item)=> total + item.price * item.qty,0))%></b></div>
-        </div></font></b></td>
+        <td width="20%"><b><font color="#FF0000"><%=Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(items.reduce((total,item)=>total+item.qty*item.price,0)).replace('₫', 'VND')%></font></b></td>
     </tr>
+
 </table>
 
 <p>
@@ -41,4 +39,3 @@
 
 </body>
 </html>
-

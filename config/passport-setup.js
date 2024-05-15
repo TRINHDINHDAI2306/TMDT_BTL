@@ -29,7 +29,7 @@ const sendNotificationEmail = (email) => {
   });
 
   const mailOptions = {
-    from: "Vietpro Store 👻 <quantri.vietproshop@gmail.com>",
+    from: "Mobile Store 👻 <quantri.mobileshop@gmail.com>",
     to: email,
     subject: "Đăng nhập thành công",
     text: "Bạn đã đăng nhập thành công Website MobiShop bằng tài khoản Google.",

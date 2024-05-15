@@ -78,18 +78,17 @@ const del = async (req, res) => {
     return res.redirect("/admin/comments")
 }
 
-const delAll = async (req,res)=>{
-    const {checkedIds} = req.body;
-    await CommentModel.deleteMany({_id: { $in: checkedIds}})
-    return res.redirect("/admin/comments");
-}
-
+const delSelected = async (req, res) => {
+  const id = req.body.selectedComments;
+  await CommentModel.deleteMany({ _id: {$in: id} });
+  res.redirect("/admin/comments");
+};
 module.exports = {
-    index,
-    create,
-    updateStatusComment,
-    store,
-    approved,
-    del,
-    delAll
+  index,
+  create,
+  updateStatusComment,
+  store,
+  approved,
+  del,
+  delSelected,
 };

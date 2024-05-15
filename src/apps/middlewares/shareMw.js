@@ -5,6 +5,7 @@ const ConfigsModel = require("../models/configModel");
 const SliderModel = require("../models/SliderModel");
 const BannerModel = require("../models/BannerModel");
 const CustomerModel = require("../models/CustomerModel");
+const orderModel = require("../models/orderModel");
 
 const shareMw = {
   categories: async (req, res, next) => {

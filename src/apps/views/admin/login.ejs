@@ -35,25 +35,36 @@
 						</div>
 						<% }%>
 							<form role="form" method="post">
-								<fieldset>
-									<div class="form-group">
-										<input class="form-control" placeholder="E-mail" name="email"
-											type="email" autofocus value="<%=rememberEmail%>">
-									</div>
-									<div class="form-group">
-										<input class="form-control" placeholder="Mật khẩu" name="password"
-											type="password" value="<%=rememberPassword%>">
-									</div>
-									<div class="checkbox">
-										<label>
-											<input <% if (rememberEmail) { %>checked<% } %>
-												name="remember" type="checkbox" value="true"
-												>Nhớ tài khoản
-										</label>
-									</div>
-									<button type="submit" class="btn btn-danger">Đăng nhập</button>
-									<a href="/admin/register" class="btn btn-info">Đăng ký</a>
-								</fieldset>
+								 <fieldset>
+                <div class="form-group">
+                  <input
+                    class="form-control"
+                    placeholder="E-mail"
+                    name="email"
+                    type="email"
+                    autofocus
+                  />
+                </div>
+                <div class="form-group">
+                  <input
+                    class="form-control"
+                    placeholder="Mật khẩu"
+                    name="password"
+                    type="password"
+                  />
+                </div>
+                <div class="checkbox">
+                  <label>
+                    <input
+                      name="remember"
+                      type="checkbox"
+                      value="true"
+                    />Nhớ tài khoản
+                  </label>
+                </div>
+                <button type="submit" class="btn btn-primary">Đăng nhập</button>
+                <a href="/admin/register" class="btn btn-primary">Đăng ký</a>
+              </fieldset>
 							</form>
 							<div class="hor-line">
 								<span>Hoặc</span>

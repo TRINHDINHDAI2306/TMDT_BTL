@@ -11,7 +11,7 @@ router.post("/admin/products/store", UploadMw.array("thumbnail",20) , productCon
 router.get("/admin/products/edit/:id",productController.edit);
 router.post("/admin/products/update/:id",UploadMw.array("thumbnail",20),productController.update);
 router.get("/admin/products/delete/:id",productController.del);
-router.post("/admin/products/deleteAll",productController.delAll);
+router.post("/admin/products/delete-selected", productController.delSelected);
 
 
 module.exports = router;

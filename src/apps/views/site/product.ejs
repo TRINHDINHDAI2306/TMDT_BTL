@@ -1,4 +1,4 @@
-<%- include("./layouts/headSite.ejs",{title: "San pham"}) %>
+<%- include("./layouts/headSite.ejs",{title: "Sản phẩm"}) %>
 <%- include("./layouts/headerSite.ejs") %>
 <%- include("./layouts/menuSite.ejs") %>
 <%- include("./layouts/sliderSite.ejs") %>
@@ -13,7 +13,7 @@
       <div class="carousel slide" id="carousel<%= product._id %>" data-ride="carousel">
         <div class="carousel-inner">
           <div class="carousel-item active">
-            <img style="margin-left: 42px;"  width="150" height="350" src="../Uploads/images/<%= product.thumbnails[0] %>" class="d-block w-80" alt="Large Slide 0">
+            <img style="margin-left: 42px; max-width: 100%; height: auto;"  width="150" height="350" src="../Uploads/images/<%= product.thumbnails[0] %>" class="d-block w-80" alt="Large Slide 0">
           </div>
         </div>
         <a class="carousel-control-prev" href="#carousel<%= product._id %>" role="button" data-slide="prev">
@@ -44,6 +44,7 @@
         <li><span>Khuyến Mại:</span> <%=product.promotion%></li>
         <li id="price">Giá Bán (chưa bao gồm VAT)</li>
         <li id="price-number"><%=formatPrice(product.price);%></li>
+        <li id="storehouse"><span>Kho: </span> <%=product.storehouse%></li>
         <li id="status" class="text-<%=product.is_stock?'success':'danger'%>"><%=product.is_stock?'Còn hàng':'Hết hàng'%></li>
       </ul>
       <% if(product.is_stock){%>

@@ -28,7 +28,9 @@
       <i class="glyphicon glyphicon-plus"></i> Thêm sản phẩm
     </a>
     <%if(userValidate.role == "admin"){%>
-    <button id="deleteSelected" class="btn btn-danger">Xóa nhiều mục</button>
+    <a class="btn btn-danger" onclick="deleteSelected()" style="margin-left: 5px; border-radius: 5px;">
+      <i class="glyphicon"></i> Xóa mục đã chọn
+    </a>
     <%}%>
   </div>
 
@@ -36,144 +38,80 @@
 			<div class="col-lg-12">
 				<div class="panel panel-default">
 					<div class="panel-body">
-                        <table 
-                            data-toolbar="#toolbar"
-                            data-toggle="table">
-
-						    <thead>
-						    <tr>
-						        <th class="col-lg-1" data-field="checkbox" data-sortable="true"></th>
-						        <th class="col-lg-1" data-field="id" data-sortable="true">ID</th>
-						        <th class="col-lg-2" data-field="name"  data-sortable="true">Tên sản phẩm</th>
-                    <th class="col-lg-1">Danh mục</th>
-                    <th class="col-lg-4">Ảnh sản phẩm</th>
-                                <th class="col-lg-1" data-field="price" data-sortable="true">Giá</th>
-                                <th class="col-lg-1">Trạng thái</th>
-                                <th class="col-lg-1">Hành động</th>
-						    </tr>
-                            </thead>
-                            <tbody>
-                                <% for(let product of products) {%>
-    <tr>
-      <td><input type="checkbox" class="myCheckbox" data-id="<%= product._id %>"></td>
-      <td><%=count++%></td>
-      <td><%=product.name%></td>
-      <td><%=product.cat_id?.title?product.cat_id.title:"" %></td>
-
-      <td style="text-align: center">
-        <!-- Hiển thị ảnh lớn ở trên -->
-        <div class="carousel slide" id="carousel<%= product._id %>" data-ride="carousel">
-          <div class="carousel-inner">
-            <div class="carousel-item active">
-              <img width="mx-auto" height="200" src="../Uploads/images/<%= product.thumbnails[0] %>" class="d-block mx-auto w-50" alt="Large Slide 0">
-            </div>
-          </div>
-          <a class="carousel-control-prev" href="#carousel<%= product._id %>" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-          </a>
-          <a class="carousel-control-next" href="#carousel<%= product._id %>" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-          </a>
-        </div>
-
-        <!-- Hiển thị các ảnh nhỏ bên dưới -->
-        <div class="row mt-3">
-          <% product.thumbnails.forEach((thumbnail, index) => { %>
-          <div class="col-md-2">
-            <img src="../Uploads/images/<%= thumbnail %>" class="img-thumbnail" alt="Thumbnail <%= index + 1 %>" onclick="changeLargeImage('<%= product._id %>','<%= thumbnail %>')" style="cursor: pointer;">
-          </div>
-          <% }); %>
-        </div>
-      </td>
-
-      <td><%=Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price);%></td>
-      <td><span class="label label-<%=product.is_stock===true?'success':'danger'%>"><%=product.is_stock===true?'Con hang':'Het hang'%></span></td>
-      <td class="form-group">
-        <a href="/admin/products/edit/<%=product._id%>" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
-
-        <%if(userValidate.role == "admin"){%>
-        <a href="javascript:void(0);" class="btn btn-danger" onclick="confirmDeleteOne('<%= product._id %>')"><i class="glyphicon glyphicon-remove"></i></a>
-        <%}%>
-          </td>
+          <form action="/admin/products/delete-selected" id="selectForm" method="post">
+  <table 
+    data-toolbar="#toolbar"
+    data-toggle="table">
+      <thead>
+        <tr>
+          <th class="col-lg-1" data-field="id" data-sortable="true">ID</th>
+          <th class="col-lg-2" data-field="name" data-sortable="true">Tên sản phẩm</th>
+          <th class="col-lg-1">Danh mục</th>
+          <th class="col-lg-4">Ảnh sản phẩm</th>
+          <th class="col-lg-1" data-field="price" data-sortable="true">Giá</th>
+          <th class="col-lg-1" data-field="storehouse" data-sortable="true">Kho</th>
+          <th class="col-lg-1">Trạng thái</th>
+          <th class="col-lg-1">Hành động</th>
+          <th class="col-lg-1" data-field="checkbox" data-sortable="true">Chọn</th>
         </tr>
-        <script>
-          // thay đổi kick thước ảnh
-          const changeLargeImage = (productId, thumbnail) => {
-              $(`#carousel${productId} .carousel-inner`).html(`<div class="carousel-item active"><img src="../Uploads/images/${thumbnail}" class="d-block mx-auto width="mx-auto" height="200 " w-50" alt="Large Slide"></div>`);
-          }
-      </script>
-        <script>
-          // bắt sự kiện Thay đổi trạng thái checkbox
-          document.querySelectorAll(".myCheckbox").forEach(checkbox => {
-            checkbox.addEventListener("change", () => {
-              updateCheckedIds();
-            });
-          });
+      </thead>
+      <tbody>
+        <% for (let product of products) { %>
+          <tr>
+            <td><%= count++ %></td>
+            <td><%= product.name %></td>
+            <td><%= product.cat_id?.title ? product.cat_id.title : "" %></td>
+            <td style="text-align: center">
+              <!-- Display large image -->
+              <div class="carousel slide" id="carousel<%= product._id %>" data-ride="carousel">
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <img width="mx-auto" height="200" src="../Uploads/images/<%= product.thumbnails[0] %>" class="d-block mx-auto w-50" alt="Large Slide 0">
+                  </div>
+                </div>
+                <a class="carousel-control-prev" href="#carousel<%= product._id %>" role="button" data-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carousel<%= product._id %>" role="button" data-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </div>
 
-           const updateCheckedIds = () => {
-            const checkedIds = [];
-            document.querySelectorAll(".myCheckbox:checked").forEach(checkbox => {
-              checkedIds.push(checkbox.getAttribute("data-id"));
-            });
-            sendCheckedIds(checkedIds);
-          }
-          // Gửi yêu cầu về server (AJAX)
-          const sendCheckedIds = (checkedIds) => {
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "/admin/products/deleteAll", true); // open() nhận vào 3 tham số (phương thức, url xử lý, async). true: bất đồng bộ
-            xhr.setRequestHeader("Content-Type", "application/json"); // dữ liệu gửi về dạng JSON
-            xhr.send(JSON.stringify({
-              checkedIds: checkedIds
-            }));
-          }
-          // Thêm hàm hiển thị hộp thoại xác nhận
-          const confirmDelete = () => {
-            return confirm("Bạn có chắc chắn muốn xóa các sản phẩm đã chọn? Sản phẩm sẽ được chuyển đến thùng rác.");
-          }
-          
-// hiển thị thông báo khi xóa ko checked
-const showDeleteAlert = () => {
-        const deleteAlert = document.getElementById("deleteAlert");
-        deleteAlert.style.display = "block";
-
-        // Ẩn thông báo sau một khoảng thời gian
-        setTimeout(() => {
-          deleteAlert.style.display = "none";
-        }, 1000); // 3 giây
-      };
-
-      // Bắt sự kiện click nút Xóa đã chọn
-      document.getElementById("deleteSelected").addEventListener("click", () => {
-        const checkedCheckboxes = document.querySelectorAll(".myCheckbox:checked");
-
-        if (checkedCheckboxes.length === 0) {
-          // Nếu không có mục nào được chọn, hiển thị thông báo
-          showDeleteAlert();
-        } else {
-          // Nếu có mục được chọn, xác nhận hành động xóa
-          if (confirmDelete()) {
-            updateCheckedIds();
-            location.reload(); // sau khi xóa reload trang
-          }
-        }
-      });
-        </script>
-        <script>
-          // hàm cảnh báo xóa   
-          const confirmDeleteOne = (ProductId) => {
-            const confirmMsg = "Bạn có chắc muốn xóa sản phẩm này?";
-            if (confirm(confirmMsg)) {
-              window.location.href = "/admin/Products/delete/" + ProductId;
-              location.reload();
+              <!-- Display thumbnails -->
+              <div class="row mt-3">
+                <% product.thumbnails.forEach((thumbnail, index) => { %>
+                  <div class="col-md-2">
+                    <img src="../Uploads/images/<%= thumbnail %>" class="img-thumbnail" alt="Thumbnail <%= index + 1 %>" onclick="changeLargeImage('<%= product._id %>','<%= thumbnail %>')" style="cursor: pointer;">
+                  </div>
+                <% }); %>
+              </div>
+            </td>
+            <td><%= Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price); %></td>
+            <td><%= product.storehouse %></td>
+            <td><span class="label label-<%= product.is_stock === true ? 'success' : 'danger' %>"><%= product.is_stock === true ? 'Còn hàng' : 'Hết hàng' %></span></td>
+            <% if (userValidate.role === "admin") { %>
+              <td class="form-group">
+                <a href="/admin/products/edit/<%= product._id %>" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
+                <a onclick="deleteOne('<%= product._id %>')" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
+              </td>
+              <td>
+                <input class="selected-unbox" type="checkbox" name="selectedProducts[]" value="<%= product._id %>">
+              </td>
+            <% } %>
+          </tr>
+          <script>
+            // Change large image function
+            const changeLargeImage = (productId, thumbnail) => {
+              $(`#carousel${productId} .carousel-inner`).html(`<div class="carousel-item active"><img src="../Uploads/images/${thumbnail}" class="d-block mx-auto" width="mx-auto" height="200" w-50" alt="Large Slide"></div>`);
             }
-          }
-        </script>
-        <%}%>
-
-        </tbody>
-        </table>
+          </script>
+        <% } %>
+      </tbody>
+  </table>
+</form>
+        <%-include("../layout/select.ejs", {router: "products"})%>
   </div>
   <div class="panel-footer">
     <nav aria-label="Page navigation example">

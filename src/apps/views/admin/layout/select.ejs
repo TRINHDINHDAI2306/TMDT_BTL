@@ -1,0 +1,36 @@
+<script>
+  // Hiển thị thông báo xóa thành công
+  const showDeleteSuccessMessage = () => {
+    const deleteSuccessMessage = document.getElementById(
+      "deleteSuccessMessage"
+    );
+    deleteSuccessMessage.style.display = "block";
+    setTimeout(() => {
+      location.reload(); // sau khi xóa reload trang
+      deleteSuccessMessage.style.display = "none";
+    }, 1000); // Hide after 2 seconds
+  };
+  function selectedCheckbox() {
+    const checkBox = document.querySelectorAll(".selected-unbox");
+    checkBox.forEach((check) => (check.checked = !check.checked));
+  }
+  const deleteOne = (id) => {
+    if (confirm("Are you sure you want to delete?")) {
+      window.location.href = `/admin/<%=router%>/delete/${id}`;
+    } else {
+      return false;
+    }
+  };
+  const deleteSelected = () => {
+    const getId = document.querySelectorAll(".selected-unbox:checked");
+    const getIds = Array.from(getId).map((i) => i.value);
+    if (getIds.length === 0) {
+      alert("Bạn chưa chọn ô nào!");
+      return false;
+    } else if (confirm("Are you sure you want to delete?")) {
+      document.getElementById("selectForm").submit();
+    } else {
+      return false;
+    }
+  };
+</script>

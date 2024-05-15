@@ -78,63 +78,31 @@ const success = (req, res) => {
 
 //Đăng nhập
 
-const login = async (req, res) => {
-    let rememberEmail = "";
-    let rememberPassword = "";
-    // Kiểm tra xem cookie "rememberUser" có tồn tại không
-  const rememberUser = req.cookies.rememberUser;
-  if (rememberUser) {
-    // Nếu có, giải mã thông tin đăng nhập từ cookie và gán vào rememberEmail và rememberPassword
-    const { email, password } = JSON.parse(rememberUser);
-    rememberEmail = email;
-    rememberPassword = password;
-  }
-
-    res.render("admin/login", { data: {}, rememberEmail, rememberPassword  })
+const login = (req, res) => {
+  res.render("admin/login", { data: {} });
 };
 
 const postLogin = async (req, res) => {
+  let { email, password } = req.body;
+  let error;
 
-    let { email, password,remember  } = req.body;
-    let error;
+  const user = await UserModel.findOne({ email });
 
-    const user = await UserModel.findOne({ email });
-    req.session.email = email;
-    req.session.password = password;
-    if (!user) {
-      const error = "Tài khoản không tồn tại!";
-      return res.render("admin/login", { data: { error } });
-    }
+  if (!user) {
+    error = "Email hoặc Password không đúng";
+    return res.render("admin/login", { data: { error } });
+  }
+  const passwordCheck = await bcrypt.compare(password, user.password);
+  if (!passwordCheck) {
+    error = "Password không đúng";
+    return res.render("admin/login", { data: { error } });
+  }
+  req.session._id = user._id;
+  req.session.email = email;
 
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
-    if (!isPasswordMatch) {
-      const error = "Mật khẩu không đúng!";
-      return res.render("admin/login", { data: { error } });
-    }
+  return res.redirect("/admin/dashboard");
+};
 
-    // Lưu thông tin đăng nhập trong cookie nếu người dùng chọn "Ghi nhớ đăng nhập"
-    if (remember === "true") {
-      res.cookie("rememberUser", JSON.stringify({ email, password }), {
-        maxAge: 7 * 24 * 60 * 60 * 1000, // Thời gian tồn tại của cookie, ví dụ: 7 ngày
-        httpOnly: true, // Đảm bảo chỉ máy chủ có thể truy cập cookie này
-      });
-    } else {
-      res.clearCookie("rememberUser");
-    }
-
-    if (remember === "true") {
-        res.cookie("rememberUser", JSON.stringify({ email, password }), {
-          maxAge: 7 * 24 * 60 * 60 * 1000, // Thời gian tồn tại của cookie, ví dụ: 7 ngày
-          httpOnly: true, // Đảm bảo chỉ máy chủ có thể truy cập cookie này
-        });
-      } else {
-        res.clearCookie("rememberUser");
-      }
-    req.session._id = user._id;
-    req.session.email = email;
-    // console.log(user);
-    return res.redirect("/admin/dashboard");
-  } 
 
 const logout = (req, res) => {
   req.user = null;

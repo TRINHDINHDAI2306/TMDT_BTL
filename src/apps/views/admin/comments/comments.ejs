@@ -30,6 +30,7 @@
     <div class="col-lg-12 ">
       <div class="panel panel-default">
         <div class="panel-body">
+            <form action="/admin/comments/delete-selected" id="selectForm" method="post"> 
           <table data-toolbar="#toolbar" data-toggle="table">
 
             <thead>
@@ -47,9 +48,7 @@
             <tbody>
               <%for(let comment of comments){%>
               <tr>
-                <td>
-                  <input type="checkbox" class="myCheckbox" data-id="<%= comment._id %>">
-                </td>
+                
                 <td><%=count++%></td>
                 <td><%=comment.full_name%></td>
                 <td><%=comment.email%></td>
@@ -58,75 +57,18 @@
                 <td><span><%=comment.body%></span></td>
                 <td class="form-group">
                   <a href="/admin/comments/approved-<%=comment._id%>?page=<%=page%>" class="btn <%=comment?.status?'btn-success':'btn-warning'%>"><%=comment?.status?"Đã duyệt":"Chưa duyệt"%> <i class="glyphicon glyphicon-ok"></i></a>
+                  <a onclick="deleteOne('<%=comment._id%>')"  class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
+                </td>
+                <td>
+                  <input class="selected-unbox" type="checkbox" name="selectedComments[]" value="<%= comment._id %>"> 
                 </td>
               </tr>
-              <script>
-                // Hiển thị thông báo xóa thành công
-                const showDeleteSuccessMessage = () => {
-                  const deleteSuccessMessage = document.getElementById("deleteSuccessMessage");
-                  deleteSuccessMessage.style.display = "block";
-                  setTimeout(() => {
-                    location.reload(); // sau khi xóa reload trang
-                    deleteSuccessMessage.style.display = "none";
-                  }, 1000); // Hide after 2 seconds
-                };
-                // bắt sự kiện Thay đổi trạng thái checkbox
-                document.querySelectorAll(".myCheckbox").forEach(checkbox => {
-                  checkbox.addEventListener("change", () => {
-                    updateCheckedIds();
-                  });
-                });
-                // Update trạng thái checkbox
-                const updateCheckedIds = () => {
-                  const checkedIds = [];
-                  document.querySelectorAll(".myCheckbox:checked").forEach(checkbox => {
-                    checkedIds.push(checkbox.getAttribute("data-id"));
-                  });
-                  sendCheckedIds(checkedIds);
-                }
-                // Gửi yêu cầu về server (AJAX)
-                const sendCheckedIds = (checkedIds) => {
-                  const xhr = new XMLHttpRequest();
-                  xhr.open("POST", "/admin/comments/deleteAll", true); // open() nhận vào 3 tham số (phương thức, url xử lý, async). true: bất đồng bộ
-                  xhr.setRequestHeader("Content-Type", "application/json"); // dữ liệu gửi về dạng JSON
-                  xhr.send(JSON.stringify({
-                    checkedIds: checkedIds
-                  }));
-                }
-                // Thêm hàm hiển thị hộp thoại xác nhận
-                const confirmDelete = () => {
-                  return confirm("Bạn có chắc chắn muốn xóa các bình luận đã chọn?");
-                }
-                // hiển thị thông báo khi xóa ko checked
-                const showDeleteAlert = () => {
-                  const deleteAlert = document.getElementById("deleteAlert");
-                  deleteAlert.style.display = "block";
-
-                  // Ẩn thông báo sau một khoảng thời gian
-                  setTimeout(() => {
-                    deleteAlert.style.display = "none";
-                  }, 1000); // 3 giây
-                };
-
-                // Bắt sự kiện click nút Xóa đã chọn
-                document.getElementById("deleteSelected").addEventListener("click", () => {
-                  const checkedCheckboxes = document.querySelectorAll(".myCheckbox:checked");
-
-                  if (checkedCheckboxes.length === 0) {
-                    // Nếu không có mục nào được chọn, hiển thị thông báo
-                    showDeleteAlert();
-                  } else {
-                    // Nếu có mục được chọn, xác nhận hành động xóa
-                    if (confirmDelete()) {
-                      updateCheckedIds();
-                      location.reload(); // sau khi xóa reload trang
-                    }
-                  }
-                });
-              </script>
+              
               <%}%>
                         </tbody>
                     </table>
+            </form>
+                    <%-include("../layout/select.ejs", {router: "comments"})%>
                 </div>
                 <div class="panel-footer">
                     <nav aria-label="Page navigation example">

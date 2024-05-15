@@ -8,7 +8,7 @@ router.get("/admin/comments/create",commentController.create)
 router.post("/admin/comments/update",commentController.updateStatusComment)
 router.post("/admin/comments/store",commentController.store)
 router.get("/admin/comments/approved-:id",commentController.approved)
-router.get("/admin/comments/delete:id",commentController.del)
-router.post("/admin/comments/deleteAll",commentController.delAll)
+router.get("/admin/comments/delete/:id",commentController.del)
+router.post("/admin/comments/delete-selected", commentController.delSelected);
 
 module.exports = router;

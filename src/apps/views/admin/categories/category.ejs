@@ -55,7 +55,7 @@
 											<td class="form-group">
 												<%if(userValidate.role == "admin"){%>
 												<a href="/admin/categories/edit/<%=category._id%>" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
-												<a href="javascript:void(0);" class="btn btn-danger" onclick="confirmDeleteOne('<%= category._id %>')"><i class="glyphicon glyphicon-remove"></i></a>
+												<a onclick="deleteOne('<%= category._id %>')" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
 												<%}else{%>
 													<p>Bạn không có quyền edit,delete</p>
 													<%}%>
@@ -72,6 +72,7 @@
 										<% } %>
 									<% } %>
 								</table>
+								<%-include("../layout/select.ejs", {router: "categories"})%>
 							</div>
 							<div class="panel-footer">
 								<nav aria-label="Page navigation example">

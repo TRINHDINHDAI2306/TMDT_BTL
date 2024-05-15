@@ -49,19 +49,22 @@
                                 <div class="form-group">
                                     <label>Danh mục</label>
                                     <select name="cat_id" class="form-control">
-                                        <%for(let category of catogories){%>
+                                        <%for(let category of categories){%>
                                         <option value=<%=category._id%>><%=category.title%></option>
                                         <%}%>
                                     </select>
                                 </div>
-                                
                                 <div class="form-group">
+                                    <label>Kho</label>
+                                    <input required name="storehouse" type="text" class="form-control">
+                                </div> 
+                                <!-- <div class="form-group">
                                     <label>Trạng thái</label>
                                     <select name="is_stock" class="form-control">
                                         <option value=1 selected>Còn hàng</option>
                                         <option value=0>Hết hàng</option>
                                     </select>
-                                </div> 
+                                </div>  -->
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">

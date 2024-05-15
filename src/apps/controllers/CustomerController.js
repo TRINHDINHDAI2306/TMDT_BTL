@@ -62,7 +62,7 @@ const postLogin = async (req, res) => {
   const passwordCheck = await bcrypt.compare(password, customer.password);
   if (!passwordCheck) {
     error = "Password không đúng";
-    return res.render("admin/login", { data: { error } });
+    return res.render("admin/customers/login", { data: { error } });
   }
   req.session._id = customer._id;
   req.session.email = email;
@@ -72,7 +72,7 @@ const postLogin = async (req, res) => {
 
 const logout = (req, res) => {
   req.session.destroy();
-  return res.redirect("/");
+  return res.redirect("/admin/customers/login");
 };
 
 module.exports = {

@@ -30,6 +30,8 @@
                 <th  class="col-lg-1"  data-field="quantity" data-sortable="true">Số lượng</th>
                 <th  class="col-lg-2" data-field="price" data-sortable="true">Đơn giá</th>
                 <th  class="col-lg-3" data-field="total" data-sortable="true">Tổng tiền</th>
+                <th  class="col-lg-3" data-field="payment_method" data-sortable="true">Phương thức thanh toán </th>
+                <th  class="col-lg-3" data-field="payment_status" data-sortable="true">Trạng thái</th>
               </tr>
             </thead>
             <tbody>
@@ -43,6 +45,9 @@
                 <% if (orderDetail == order.items[0]) { %>
                 <td style="text-align: right;" rowspan="<%= order.items.length %>"><span><%= formatPrice(order.total_price) %></span></td>
 
+                
+                <td style="text-align: right;" rowspan="<%= order.items.length %>"><span><%=  order.payment_method %></span></td>
+                <td style="text-align: right;" rowspan="<%= order.items.length %>"><span><%=order.isPaid===true? 'Thành công' : 'Chưa thanh toán'  %></span></td>
                 <% } %>
               </tr>
               <% } %>
