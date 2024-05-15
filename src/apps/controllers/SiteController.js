@@ -657,7 +657,7 @@ const checkVnpayStatus = async (req, res) => {
   let signData = querystring.stringify(vnp_Params, { encode: false });
   let crypto = require("crypto");
   let hmac = crypto.createHmac("sha512", secretKey);
-  let signed = hmac.update(new Buffer(signData, "utf-8")).digest("hex");
+ let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
 
   let paymentStatus = "0"; // Giả sử '0' là trạng thái khởi tạo giao dịch, chưa có IPN. Trạng thái này được lưu khi yêu cầu thanh toán chuyển hướng sang Cổng thanh toán VNPAY tại đầu khởi tạo đơn hàng.
   //let paymentStatus = '1'; // Giả sử '1' là trạng thái thành công bạn cập nhật sau IPN được gọi và trả kết quả về nó
@@ -743,8 +743,8 @@ const paymentZalopay = async (req, res) => {
     app_time: Date.now(), // miliseconds
     item: JSON.stringify(items),
     embed_data: JSON.stringify(embed_data),
-    amount: 50000,
-    description: `Lazada - Payment for the order #${transID}`,
+    amount: newOrder.total_price,
+    description: ` Payment for the order #${orderId}`,
     bank_code: "zalopayapp",
     callback_url: "https://b074-1-53-37-194.ngrok-free.app/callback",
   };
@@ -779,7 +779,6 @@ const paymentZalopay = async (req, res) => {
 // Ham thanh toan thanh cong
 const paymentZalopaySuccess = async (req, res) => {
   let result = {};
-  console.log(req.body);
   try {
     let dataStr = req.body.data;
     let reqMac = req.body.mac;
@@ -923,7 +922,7 @@ const validateEmail = async (req, res) => {
   await transporter.sendMail({
     from: '"Mobile Store 👻" <quantri.vietproshop@gmail.com>', // sender address
     to: email, // list of receivers
-    subject: "Mã xác thực OTP cho tài khoản customer VietProShop✔", // Subject line
+    subject: "Mã xác thực OTP cho tài khoản customer MobileShop✔", // Subject line
     html, // html body
   });
   req.session.emailChanged = email;
