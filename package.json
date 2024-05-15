@@ -19,12 +19,8 @@
     "config": "^3.3.9",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-<<<<<<< HEAD
-    "crypto": "^1.0.1",
     "crypto-js": "^4.2.0",
-=======
     "dateformat": "^5.0.3",
->>>>>>> 6a71d73b7da71072fd1061c3ffa75ef1931b5f07
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.18.2",

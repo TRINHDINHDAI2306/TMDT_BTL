@@ -18,7 +18,6 @@ router.get("/cart", SiteController.cart);
 // VNPay
 router.post("/order/create_payment_url", SiteController.order);
 // VNPay return success
-<<<<<<< HEAD
 router.get("/order/vnpay_return", SiteController.vnpayReturn);
 // Check vnp
 // zalopay
@@ -30,9 +29,7 @@ router.post(
   "/order/zalopay_status/:app_trans_id",
   SiteController.checkZalopayStatus
 );
-=======
-router.get("/order/vnpay_return", SiteController.vnpayReturn);  
->>>>>>> 6a71d73b7da71072fd1061c3ffa75ef1931b5f07
+
 router.get("/success", SiteController.success);
 router.get("/forget", SiteController.forgetPassword);
 router.post("/forget", SiteController.validateEmail);
@@ -42,21 +39,13 @@ router.get("/forget/success", SiteController.forgetSuccess);
 router.get("/information/orders", SiteController.informationOrders);
 router.get("/information/infoCustomer", SiteController.informationCustomer);
 router.get(
-<<<<<<< HEAD
   "/information/infoCustomer/edit",
   SiteController.editInformationCustomer
 );
 router.post(
   "/information/infoCustomer/update",
   SiteController.updateInformationCustomer
-=======
-    "/information/infoCustomer/edit",
-    SiteController.editInformationCustomer
-);
-router.post(
-    "/information/infoCustomer/update",
-    SiteController.updateInformationCustomer
->>>>>>> 6a71d73b7da71072fd1061c3ffa75ef1931b5f07
+
 );
 
 module.exports = router;
