@@ -1,6 +1,7 @@
 const OrderModel = require("../models/orderModel");
 const ProductModel = require("../models/ProductModel");
 const pagination = require("../../common/pagination");
+const vndPrice = require("../../libs/vndPrice");
 
 const index = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -18,6 +19,7 @@ const index = async (req, res) => {
     orders,
     count,
     totalPages,
+    vndPrice,
     page,
     pages: pagination(page, limit, totalRows),
   });

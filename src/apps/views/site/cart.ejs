@@ -1,9 +1,10 @@
-<%- include("./layouts/headSite.ejs",{title: "Gio hang"}) %>
+<%- include("./layouts/headSite.ejs",{title: "Giỏ hàng"}) %>
 <%- include("./layouts/headerSite.ejs") %>
 <%- include("./layouts/menuSite.ejs") %>
 <%- include("./layouts/sliderSite.ejs") %>
 
 <!--	Cart	-->
+<% if (items && items.length > 0) { %>
 <div id="my-cart">
   <div class="row">
     <div class="cart-nav-item col-lg-7 col-md-7 col-sm-12">Thông tin sản phẩm</div>
@@ -36,11 +37,22 @@
 </form>
 
 </div>
+<% } else { %>
+<div id="my-cart">
+  <div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+      <p><b>Chưa có sản phẩm trong giỏ hàng!</b></p>
+      <b>Để xem thêm các sản phẩm cần mua, vui lòng bấm <a href="/">vào đây</a></b>
+    </div>
+
+  </div>
+</div>
+<% } %>
 <!--	End Cart	-->
 
 <!--	Customer Info	-->
 <div id="customer">
-  <form method="post" action="/order/create_payment_url">
+  <form id="orderForm" method="post" action="/order/create_payment_url">
     <% if(data && data.error){%>
     <div class="alert alert-danger">
       <%=data.error%><a href="/admin/customers/login"> Click Here </a>để có thể đăng nhập!
@@ -140,15 +152,23 @@
     <p id="paymentError" class="p-3" style="color:red; display: none;">Vui lòng chọn phương thức thanh toán ! </p>
     </div>  
     <!-- Action thanh toan -->
+
     <div class="row">
       <div class="by-now col-lg-6 col-md-6 col-sm-12">
-        <button id="btn-bank" type="submit" class="btn btn-danger">
-          <b>Mua ngay</b>
-          <span>Giao hàng tận nơi siêu tốc</span>
-        </button>
-      </div>
+      <% if (customer) { %>
+      <button onClick="orderConfirm('<%=customer._id%>')" class="btn btn-danger">
+        <b>Mua ngay</b>
+        <span>Giao hàng tận nơi siêu tốc</span>
+      </button>
+      <% } else { %>
+      <button onClick="orderConfirm()" class="btn btn-danger">
+        <b>Mua ngay</b>
+        <span>Giao hàng tận nơi siêu tốc</span>
+      </button>
+      <% } %>
+    </div>
       <script>
-      document.getElementById("btn-bank").addEventListener("click", function(event) {
+      document.getElementById("btn-buy-now").addEventListener("click", function(event) {
           const paymentInputs = document.querySelectorAll('input[name="payment"]');
           const paymentError = document.getElementById('paymentError');
           let isAnyInputChecked = false;
@@ -174,10 +194,16 @@
       </div>
     </div>
   </form>
-
 </div>
+
 <!--	End Customer Info	-->
 <script>
+   function orderConfirm(id) {
+    if (!id) {
+        alert('Cần phải đăng nhập để mua hàng!');
+        window.location.href = '/admin/customers/login';
+    }
+}
   window.onload = function() {
     var urlParams = new URLSearchParams(window.location.search);
     var error = urlParams.get('error');

@@ -56,15 +56,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Kho</label>
-                                    <input required name="storehouse" type="text" class="form-control">
+                                    <input required name="storehouse" type="text" class="form-control" min="0">
                                 </div> 
-                                <!-- <div class="form-group">
-                                    <label>Trạng thái</label>
-                                    <select name="is_stock" class="form-control">
-                                        <option value=1 selected>Còn hàng</option>
-                                        <option value=0>Hết hàng</option>
-                                    </select>
-                                </div>  -->
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -73,7 +66,7 @@
                                     <%if(data && data.error){%>
                                         <div class="alert alert-danger"><%=data.error%></div>
                                         <%}%>
-                                    <input type="file" multiple name="thumbnail" accept="images/*" onchange="previewImages(this)">
+                                    <input type="file" required multiple name="thumbnail" accept="images/*" onchange="previewImages(this)">
                                     <br>
                                     <div class="preview"></div>
                       

@@ -60,13 +60,6 @@
                                     <label>Kho</label>
                                     <input type="text" name="storehouse" required value=<%=product.storehouse%> type="text" class="form-control">
                                 </div> 
-                                <!-- <div class="form-group">
-                                    <label>Trạng thái</label>
-                                    <select name="is_stock" class="form-control">
-                                        <option <%= product.is_stock==1 && "selected" %> value=1>Còn hàng</option>
-                                        <option <%= product.is_stock==0 && "selected" %> value=0>Hết hàng</option>
-                                    </select>
-                                </div>  -->
                                 
                             </div>
                             <div class="col-md-6">
@@ -80,11 +73,11 @@
                                     <input type="file" multiple name="thumbnail" accept="images/*" onchange="previewImages(this)" value="">
                                     <br>
                                     <div class="preview">
-                                        <% product.thumbnails.forEach((thumbnail)=> { %>
+                                        <% for (let img of product?.thumbnails) { %>
                                             <div class="image-container">
-                                                <img width="auto" height="150" src="../Uploads/images/<%= thumbnail %>">
+                                                <img width="auto" height="150" src="../Uploads/images/<%= img %>">
                                             </div>
-                                        <% }); %>
+                                        <% }; %>
                                     </div>
                       
                                     <script>
@@ -186,7 +179,7 @@
                                         </script>
                                         
                                     </div>
-                                <button name="sbm" type="submit" class="btn btn-success">Thêm mới</button>
+                                <button name="sbm" type="submit" class="btn btn-success">Cập nhật</button>
                                 <button type="reset" class="btn btn-default">Làm mới</button>
                             </div>
                         </form>

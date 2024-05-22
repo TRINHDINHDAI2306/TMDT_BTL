@@ -61,34 +61,39 @@
             <td><%= count++ %></td>
             <td><%= product.name %></td>
             <td><%= product.cat_id?.title ? product.cat_id.title : "" %></td>
-            <td style="text-align: center">
-              <!-- Display large image -->
-              <div class="carousel slide" id="carousel<%= product._id %>" data-ride="carousel">
-                <div class="carousel-inner">
-                  <div class="carousel-item active">
-                    <img width="mx-auto" height="200" src="../Uploads/images/<%= product.thumbnails[0] %>" class="d-block mx-auto w-50" alt="Large Slide 0">
-                  </div>
-                </div>
-                <a class="carousel-control-prev" href="#carousel<%= product._id %>" role="button" data-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carousel<%= product._id %>" role="button" data-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Next</span>
-                </a>
-              </div>
+<td style="text-align: center">
+  <!-- Display large image -->
+  <div class="carousel slide" id="carousel<%= product._id %>" data-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="slide-show">
+          <div class="list-images">
+            <img id="large-image-<%= product._id %>" src="../Uploads/images/<%= product.thumbnails[0] %>" class="d-block w-100" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <a class="carousel-control-prev" href="#carousel<%= product._id %>" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carousel<%= product._id %>" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
 
-              <!-- Display thumbnails -->
-              <div class="row mt-3">
-                <% product.thumbnails.forEach((thumbnail, index) => { %>
-                  <div class="col-md-2">
-                    <img src="../Uploads/images/<%= thumbnail %>" class="img-thumbnail" alt="Thumbnail <%= index + 1 %>" onclick="changeLargeImage('<%= product._id %>','<%= thumbnail %>')" style="cursor: pointer;">
-                  </div>
-                <% }); %>
-              </div>
-            </td>
-            <td><%= Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price); %></td>
+  <!-- Display thumbnails -->
+  <div class="row mt-3">
+    <% product.thumbnails.forEach((thumbnail, index) => { %>
+      <div class="col-md-2">
+        <img id="thumbnail-<%= product._id %>-<%= index %>" src="../Uploads/images/<%= thumbnail %>" class="img-thumbnail" alt="Thumbnail <%= index + 1 %>" onclick="changeLargeImage('<%= product._id %>', '<%= thumbnail %>', '<%= index %>')" style="cursor: pointer; border-color: transparent;">
+      </div>
+    <% }); %>
+  </div>
+</td>
+
+            <td><%=vndPrice(product?.price)%> VND</td>
             <td><%= product.storehouse %></td>
             <td><span class="label label-<%= product.is_stock === true ? 'success' : 'danger' %>"><%= product.is_stock === true ? 'Còn hàng' : 'Hết hàng' %></span></td>
             <% if (userValidate.role === "admin") { %>
@@ -102,11 +107,26 @@
             <% } %>
           </tr>
           <script>
-            // Change large image function
-            const changeLargeImage = (productId, thumbnail) => {
-              $(`#carousel${productId} .carousel-inner`).html(`<div class="carousel-item active"><img src="../Uploads/images/${thumbnail}" class="d-block mx-auto" width="mx-auto" height="200" w-50" alt="Large Slide"></div>`);
-            }
-          </script>
+  function changeLargeImage(productId, thumbnail, index) {
+    // Change the large image source
+    var largeImage = document.getElementById('large-image-' + productId);
+    largeImage.src = '../Uploads/images/' + thumbnail;
+
+    // Reset the border of all thumbnails
+    var thumbnails = document.querySelectorAll('[id^="thumbnail-' + productId + '-"]');
+    thumbnails.forEach(function(thumbnail) {
+      thumbnail.style.borderColor = 'transparent';
+    });
+
+    // Highlight the selected thumbnail
+    var selectedThumbnail = document.getElementById('thumbnail-' + productId + '-' + index);
+    selectedThumbnail.style.borderColor = 'red'
+    selectedThumbnail.style.borderWidth = '2px';
+  }
+
+  // Initial highlight of the first thumbnail
+  document.getElementById('thumbnail-<%= product._id %>-0').style.borderColor = 'red';
+</script>
         <% } %>
       </tbody>
   </table>

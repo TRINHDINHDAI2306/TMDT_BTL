@@ -2,35 +2,40 @@ const UserModel = require("../models/UserModel");
 const UserBinModel = require("../models/UserBinModel")
 const pagination = require("../../common/pagination");
 const bcrypt = require("bcrypt")
+const vndPrice = require("../../libs/vndPrice");
 const slug = require("slug")
-const  index = async (req,res)=>{
-    let count = 1;
-    const page = parseInt(req.query.page) || 1;
-    const limit = 5;
-    const skip = page*limit - limit;
+const index = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = page * limit - limit;
+  const query = {};
+  query.is_delete = false;
+  const users = await UserModel
+    .find(query)
+    .sort({ _id: -1 })
+    .limit(limit)
+    .skip(skip);
 
+  const totalRows = await UserModel.find(query).countDocuments();
+  const totalPages = Math.ceil(totalRows / limit);
 
-    const users= await UserModel
-    .find()
-    .populate({path:"email"})
-    .sort({_id:-1})
-    .skip(skip)
-    .limit(limit);
+  const delError = req.query.delError;
 
-    const totalRows = await UserModel
-    .find()
-    .countDocuments();
+  const user = await UserModel.findOne({ email: req.session.email });
+  const role = user?.role;
 
-    const totalPages = Math.ceil(totalRows/limit);
-
-    res.render("admin/users/user",{
-        users,
-        pages: pagination(page,limit,totalRows),
-        page,
-        totalPages,
-        count,
-    });
+  res.render("admin/users/user", {
+    data: {
+      users,
+      currentPage: page,
+      totalPages,
+      pages: pagination(page, totalPages),
+      delError,
+    },
+    role,
+  });
 };
+
 const create =async (req,res)=>{
 
     res.render("admin/users/add_user",{data:{}});
@@ -58,7 +63,7 @@ const store = async (req,res)=>{
         slug: slug(body.full_name),
         email:body.email,
         password: hashed,
-        role: body.role =="yes"?"admin":"member" ,
+        role:body.role,
     }
     await new UserModel(user).save();
     res.redirect("/admin/users")
@@ -72,39 +77,11 @@ const edit = async (req,res)=>{
 };
 
 const update = async (req, res) => {
-    const { body } = req;
-    const id = req.params.id;
-    const user = await UserModel.findById(id);
+  const { id } = req.params
+  const { role } = req.body
 
-    // Kiểm tra email trong CSDL
-    const existingUser = await UserModel.findOne({
-        _id: { $ne: id }, // Loại bỏ bản ghi hiện tại
-        email: body.email
-    });
-
-    // Nếu đã tồn tại trong CSDL
-    let error = "";
-    if (body.password !== body.re_password) {
-        error = "Password không khớp !"
-        return (
-            res.render("admin/users/edit_user", {user, data: { error } })
-        )
-    }
-    if ( existingUser) {
-        error = "Email đã tồn tại !"
-        return (res.render("admin/users/edit_user", { user,data: { error } }))
-    }
-    const hash  = await bcrypt.hash(body.password,7)
-    const newUser = {
-        full_name: body.full_name,
-        slug: slug(body.full_name),
-        email: body.email,
-        password: hash,
-        role: body.role == "yes" ? "admin" : "member",
-    }
-    await UserModel.updateOne({ _id: id }, { $set: newUser });
-    res.redirect("/admin/users")
-
+  await UserModel.updateOne({ _id: id }, { $set: { role: role } })
+  res.redirect('/admin/users')
 }
 
 const del = async(req,res)=>{
