@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
+    "product": "node src/bin/www.js",
     "start": "nodemon src/bin/www.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ."
