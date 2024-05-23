@@ -52,7 +52,7 @@
 
 <!--	Customer Info	-->
 <div id="customer">
-  <form id="orderForm" method="post" action="/order/create_payment_url">
+  <form id="orderForm" method="post" action="/order/create_payment_url" onsubmit="return false">
     <% if(data && data.error){%>
     <div class="alert alert-danger">
       <%=data.error%><a href="/admin/customers/login"> Click Here </a>để có thể đăng nhập!
@@ -200,8 +200,10 @@
 <script>
    function orderConfirm(id) {
     if (!id) {
+
         alert('Cần phải đăng nhập để mua hàng!');
         window.location.href = '/admin/customers/login';
+
     }
 }
   window.onload = function() {
