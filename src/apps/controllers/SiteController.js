@@ -95,7 +95,7 @@ const comment = async (req, res) => {
       `${req.path}?error=Vui lòng xác nhận bạn không phải là robot`
     );
   }
-  const secretKey = "LeywLopAAAAAFhfLU_rPZybwu_hnbI5gEEEgmVf";
+  const secretKey = "6LcpT-YpAAAAAOSCqVb0g6FJWdYHFJs6RbyO4X6a";
   const recaptchaUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${recaptchaToken}`;
 
   const response = await axios.post(recaptchaUrl);

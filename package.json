@@ -41,6 +41,7 @@
     "passport-google-oauth20": "^2.0.0",
     "slug": "^8.2.3",
     "sortobject": "^5.6.0",
+    "tinify": "^1.7.1",
     "uuid": "^9.0.1"
   }
 }
