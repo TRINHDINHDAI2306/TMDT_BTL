@@ -52,7 +52,7 @@
 
 <!--	Customer Info	-->
 <div id="customer">
-  <form id="orderForm" method="post" action="/order/create_payment_url" onsubmit="return false">
+  <form id="orderForm" method="post" action="/order/create_payment_url" >
     <% if(data && data.error){%>
     <div class="alert alert-danger">
       <%=data.error%><a href="/admin/customers/login"> Click Here </a>để có thể đăng nhập!
