@@ -48,7 +48,7 @@ passport.use(
   "GoogleStrategy_Customer",
   new GoogleStrategy(
     {
-      callbackURL: process.env.GOOGLE_CALLBACK_URL_CUS,
+      callbackURL: "/authCus/google/callback",
       clientID: process.env.GOOGLE_CLIENT_ID_CUS,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET_CUS,
     },
@@ -83,7 +83,7 @@ passport.use(
   "GoogleStrategy_Admin",
   new GoogleStrategy(
     {
-      callbackURL: process.env.GOOGLE_CALLBACK_URL,
+      callbackURL: "/auth/google/callback",
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     },
@@ -113,65 +113,65 @@ passport.use(
   )
 );
 
-passport.use(
-  new FacebookStrategy(
-    {
-      callbackURL: process.env.FACEBOOK_CALLBACK_URL,
-      clientID: process.env.FACEBOOK_CLIENT_ID,
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-    },
-    (accessToken, refreshToken, profile, done) => {
-      UserModel.findOne({ socialId: profile.id }).then((currentUser) => {
-        if (currentUser) {
-          done(null, currentUser);
-          console.log(profile);
-        } else {
-          new UserModel({
-            provider: profile.provider,
-            socialId: profile.id,
-            email: profile.emails
-              ? profile.emails[0].value
-              : "facebook@gmail.com",
-            full_name: profile.displayName,
-            username: slug(profile.displayName, { replacement: "" }),
-            role: "admin",
-          })
-            .save()
-            .then((newUser) => {
-              done(null, newUser);
-            });
-        }
-      });
-    }
-  )
-);
+// passport.use(
+//   new FacebookStrategy(
+//     {
+//       callbackURL: process.env.FACEBOOK_CALLBACK_URL,
+//       clientID: process.env.FACEBOOK_CLIENT_ID,
+//       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+//     },
+//     (accessToken, refreshToken, profile, done) => {
+//       UserModel.findOne({ socialId: profile.id }).then((currentUser) => {
+//         if (currentUser) {
+//           done(null, currentUser);
+//           console.log(profile);
+//         } else {
+//           new UserModel({
+//             provider: profile.provider,
+//             socialId: profile.id,
+//             email: profile.emails
+//               ? profile.emails[0].value
+//               : "facebook@gmail.com",
+//             full_name: profile.displayName,
+//             username: slug(profile.displayName, { replacement: "" }),
+//             role: "admin",
+//           })
+//             .save()
+//             .then((newUser) => {
+//               done(null, newUser);
+//             });
+//         }
+//       });
+//     }
+//   )
+// );
 
-passport.use(
-  new GitHubStrategy(
-    {
-      clientID: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: process.env.GITHUB_CALLBACK_URL,
-    },
-    function (accessToken, refreshToken, profile, done) {
-      UserModel.findOne({ socialId: profile.id }).then((currentUser) => {
-        if (currentUser) {
-          done(null, currentUser);
-        } else {
-          new UserModel({
-            provider: profile.provider,
-            socialId: profile.id,
-            email: profile.email ? profile.email : "github@gmail.com",
-            full_name: profile.username || "",
-            username: profile.username,
-            role: "admin",
-          })
-            .save()
-            .then((newUser) => {
-              done(null, newUser);
-            });
-        }
-      });
-    }
-  )
-);
+// passport.use(
+//   new GitHubStrategy(
+//     {
+//       clientID: process.env.GITHUB_CLIENT_ID,
+//       clientSecret: process.env.GITHUB_CLIENT_SECRET,
+//       callbackURL: process.env.GITHUB_CALLBACK_URL,
+//     },
+//     function (accessToken, refreshToken, profile, done) {
+//       UserModel.findOne({ socialId: profile.id }).then((currentUser) => {
+//         if (currentUser) {
+//           done(null, currentUser);
+//         } else {
+//           new UserModel({
+//             provider: profile.provider,
+//             socialId: profile.id,
+//             email: profile.email ? profile.email : "github@gmail.com",
+//             full_name: profile.username || "",
+//             username: profile.username,
+//             role: "admin",
+//           })
+//             .save()
+//             .then((newUser) => {
+//               done(null, newUser);
+//             });
+//         }
+//       });
+//     }
+//   )
+// );
