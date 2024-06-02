@@ -250,6 +250,7 @@ const addToCart = async (req, res) => {
       thumbnails: product.thumbnails,
       price: product.price,
       qty: parseInt(qty),
+      storeHouse: product.storehouse,
     });
   }
   req.session.cart = newItems;
@@ -425,7 +426,7 @@ const order = async (req, res, next) => {
         amount: newOrder.total_price,
         description: `Payment for the order #${orderId}`,
         bank_code: "",
-        callback_url: "https://b074-1-53-37-194.ngrok-free.app/callback",
+        callback_url: " https://0070-1-55-167-46.ngrok-free.app/callback",
       };
 
       // appid|app_trans_id|appuser|amount|apptime|embeddata|item
@@ -746,7 +747,7 @@ const paymentZalopay = async (req, res) => {
     amount: newOrder.total_price,
     description: ` Payment for the order #${orderId}`,
     bank_code: "zalopayapp",
-    callback_url: "https://b074-1-53-37-194.ngrok-free.app/callback",
+    callback_url: " https://0070-1-55-167-46.ngrok-free.app/callback",
   };
 
   // appid|app_trans_id|appuser|amount|apptime|embeddata|item
