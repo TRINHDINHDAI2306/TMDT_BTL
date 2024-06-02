@@ -47,7 +47,8 @@
 											  </td>
 											<td class="form-group">
 												<a href="/admin/sliders/edit-<%=slider._id%>" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
-												<a href="javascript:void(0);" class="btn btn-danger" onclick="confirmDelete('<%= slider._id %>')"><i class="glyphicon glyphicon-remove"></i></a>
+											<a onclick="deleteOne('<%= slider?._id %>')" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
+
 											</td>
 										</tr>
 										<%}%>
@@ -77,16 +78,8 @@
 			</div>
 		</div><!--/.row-->
 	</div>	<!--/.main-->
-	<script>
-		// hàm cảnh báo xóa
-		const  confirmDelete= (sliderId)=> {
-			var confirmMsg = "Bạn có chắc muốn xóa ảnh này?";
-			if (confirm(confirmMsg)) {
-				window.location.href = "/admin/sliders/delete-" + sliderId;
-				location.reload();
-			}
-		}
-		</script>
+	        <%-include("../layout/select.ejs", {router: "sliders"})%>
+
 	<script src="js/jquery-1.11.1.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/bootstrap-table.js"></script>	

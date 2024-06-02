@@ -47,7 +47,7 @@
 											  </td>
 											<td class="form-group">
 												<a href="/admin/banners/edit-<%=banner.id%>" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
-												<a href="javascript:void(0);" class="btn btn-danger" onclick="confirmDelete('<%= banner._id %>')"><i class="glyphicon glyphicon-remove"></i></a>
+											<a onclick="deleteOne('<%= banner?._id %>')" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
 											</td>
 										</tr>
 										<%}%>
@@ -77,16 +77,8 @@
 			</div>
 		</div><!--/.row-->
 	</div>	<!--/.main-->
-	<script>
-		// hàm cảnh báo xóa
-		const  confirmDelete= (BannerId)=> {
-			var confirmMsg = "Bạn có chắc muốn xóa ảnh này?";
-			if (confirm(confirmMsg)) {
-				window.location.href = "/admin/Banners/delete-" + BannerId;
-				location.reload();
-			}
-		}
-		</script>
+	        <%-include("../layout/select.ejs", {router: "banners"})%>
+
 	<script src="js/jquery-1.11.1.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/bootstrap-table.js"></script>	

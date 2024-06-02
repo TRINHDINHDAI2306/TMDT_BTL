@@ -296,7 +296,6 @@ const delItemCart = (req, res) => {
 // ======= * * *  Ham Ban dau * * *  ======
 // const order = async (req, res) => {
 
-
 // Vnp bank
 const order = async (req, res, next) => {
   try {
@@ -466,11 +465,10 @@ const order = async (req, res, next) => {
     } else if (body.payment === "momo") {
       var accessKey = "F8BBA842ECF85";
       var secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
-      var orderInfo = "pay with MoMo";
+      var orderInfo = "Di động thông minh";
       var partnerCode = "MOMO";
-      var redirectUrl =
-        "https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b";
-      var ipnUrl = "https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b";
+      var redirectUrl = "http://localhost:8000/success";
+      var ipnUrl = "http://localhost:8000/success";
       var requestType = "payWithMethod";
       var amount = newOrder.total_price;
       let orderId = partnerCode + new Date().getTime();
@@ -501,17 +499,12 @@ const order = async (req, res, next) => {
         requestId +
         "&requestType=" +
         requestType;
-      //puts raw signature
-      console.log("--------------------RAW SIGNATURE----------------");
-      console.log(rawSignature);
       //signature
       const crypto = require("crypto");
       var signature = crypto
         .createHmac("sha256", secretKey)
         .update(rawSignature)
         .digest("hex");
-      console.log("--------------------SIGNATURE----------------");
-      console.log(signature);
 
       //json object send to MoMo endpoint
       const requestBody = JSON.stringify({
@@ -547,7 +540,13 @@ const order = async (req, res, next) => {
       let result;
       try {
         result = await axios(options);
-        return res.status(200).json(result.data);
+        if (result.status === 200 && result.data.shortLink) {
+          return res.redirect(result.data.shortLink);
+        } else {
+          return res.status(500).json({
+            message: "Có lỗi xảy ra trong quá trình xử lý yêu cầu.",
+          });
+        }
       } catch (error) {
         return res
           .status(500)
@@ -555,12 +554,12 @@ const order = async (req, res, next) => {
       }
     }
   } catch (err) {
+    s;
     next(err);
   }
 };
 // Return VNPay
 const vnpayReturn = async (req, res, next) => {
-  
   var vnp_Params = req.query;
 
   var secureHash = vnp_Params["vnp_SecureHash"];
@@ -581,39 +580,41 @@ const vnpayReturn = async (req, res, next) => {
   var hmac = crypto.createHmac("sha512", secretKey);
   let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
 
-  // * * * * * Còn Bug thanh toán thành công ! * * * *
   if (secureHash === signed) {
     //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
     try {
-      const result = await orderModel.findOne(
-        { orderId: vnp_Params["vnp_TxnRef"] }
-      );
-      
-        // gui mail va tru so luong
+      const result = await orderModel.findOne({
+        orderId: vnp_Params["vnp_TxnRef"],
+      });
+
+      // gui mail va tru so luong
       const items = result.items;
-        for (const item of items) {
-          const product = await ProductModel.findById(item.prd_id);
-          if (!product) {
-            return res.redirect(`/cart?error=Product with ID ${item.prd_id} does not exist`);
-          }
-          if (product.storehouse < item.qty) {
-            await orderModel.deleteOne({
-              orderId: vnp_Params["vnp_TxnRef"],
-            });
-            return res.redirect(
-              `/cart?error=${product.name} Không đủ hàng trong kho`
-            );
-          }
-          product.storehouse -= item.qty;
-          await product.save();
+      for (const item of items) {
+        const product = await ProductModel.findById(item.prd_id);
+        if (!product) {
+          return res.redirect(
+            `/cart?error=Product with ID ${item.prd_id} does not exist`
+          );
         }
-        const updateOrder = await orderModel.findOneAndUpdate(
-          { orderId: vnp_Params["vnp_TxnRef"] },
-          { isPaid: true },
-          { new: true }
-        );if (!updateOrder) {
-          throw new Error("Order does not exist");
+        if (product.storehouse < item.qty) {
+          await orderModel.deleteOne({
+            orderId: vnp_Params["vnp_TxnRef"],
+          });
+          return res.redirect(
+            `/cart?error=${product.name} Không đủ hàng trong kho`
+          );
         }
+        product.storehouse -= item.qty;
+        await product.save();
+      }
+      const updateOrder = await orderModel.findOneAndUpdate(
+        { orderId: vnp_Params["vnp_TxnRef"] },
+        { isPaid: true },
+        { new: true }
+      );
+      if (!updateOrder) {
+        throw new Error("Order does not exist");
+      }
       const viewFolder = req.app.get("views");
       const html = await ejs.renderFile(
         path.join(viewFolder, "site/email-order.ejs"),
@@ -657,7 +658,7 @@ const checkVnpayStatus = async (req, res) => {
   let signData = querystring.stringify(vnp_Params, { encode: false });
   let crypto = require("crypto");
   let hmac = crypto.createHmac("sha512", secretKey);
- let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
+  let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
 
   let paymentStatus = "0"; // Giả sử '0' là trạng thái khởi tạo giao dịch, chưa có IPN. Trạng thái này được lưu khi yêu cầu thanh toán chuyển hướng sang Cổng thanh toán VNPAY tại đầu khởi tạo đơn hàng.
   //let paymentStatus = '1'; // Giả sử '1' là trạng thái thành công bạn cập nhật sau IPN được gọi và trả kết quả về nó
@@ -839,6 +840,8 @@ const checkZalopayStatus = async (req, res) => {
     console.log(error);
   }
 };
+
+// thanh toan thanh cong
 const paymentMomoSuccess = async (req, res) => {
   /**
     resultCode = 0: giao dịch thành công.
@@ -920,7 +923,7 @@ const validateEmail = async (req, res) => {
     }
   );
   await transporter.sendMail({
-    from: '"Mobile Store 👻" <quantri.vietproshop@gmail.com>', // sender address
+    from: '"Mobile Store 👻" <quantri.mobleshop@gmail.com>', // sender address
     to: email, // list of receivers
     subject: "Mã xác thực OTP cho tài khoản customer MobileShop✔", // Subject line
     html, // html body

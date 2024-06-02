@@ -59,7 +59,7 @@
                 <% if (role == 'admin') { %>
                 <td class="form-group">
                   <a href="/admin/users/edit/<%=user?._id%>" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
-                  <a onClick="clickDelete('<%=user?._id%>')" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
+                  <a onclick="deleteOne('<%= user?._id %>')" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
                 </td>
                 <% } %>
               </tr>
@@ -117,22 +117,5 @@
 <script src="js/bootstrap.min.js"></script>
 <script src="js/bootstrap-table.js"></script>
 
-<script>
-  function handleConfirm(id, action) {
-    const isConfirm = confirm(`Bạn có chắc chắn ${action} không?`)
-    const link = () => window.location.href = `/admin/users/${action}/${id}`
-    return isConfirm ? link() : false
-  }
-  const clickDelete = (id) => handleConfirm(id, 'delete')
-</script>
-
-<script>
-  setTimeout(() => {
-    const delError = document.getElementById('delError')
-    if (delError) {
-      delError.style.display = 'none'
-    }
-  }, 8000)
-</script>
-
+<%-include("../layout/select.ejs", {router: "users"})%>
 <%- include("../layout/footer.ejs") -%>

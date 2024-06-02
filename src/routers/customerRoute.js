@@ -10,5 +10,6 @@ router.get("/admin/customers/success", CustomerController.success);
 router.get("/admin/customers/login", CustomerController.login);
 router.post("/admin/customers/login", CustomerController.postLogin);
 router.get("/admin/customers/logout", CustomerController.logout);
+router.get("/admin/customers/delete/:id", CustomerController.del);
 
 module.exports = router;

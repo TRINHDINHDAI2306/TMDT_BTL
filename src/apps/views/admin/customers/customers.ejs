@@ -55,7 +55,7 @@
       <td><%=customer.phone%></td>
       <td class="form-group">
         <%if(userValidate.role == "admin"){%>
-        <a href="javascript:void(0);" class="btn btn-danger" onclick="confirmDeleteOne('<%= customer._id %>')"><i class="glyphicon glyphicon-remove"></i></a>
+        <a onclick="deleteOne('<%= customer?._id %>')" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
         <%}%>
                 </td>
               </tr>
@@ -73,72 +73,11 @@
 </div>
 <!--/.row-->
 </div>
+
 <!--/.main-->
-<script>
-  // hàm cảnh báo xóa đơn
-  const confirmDeleteOne = (UserId) => {
-    const confirmMsg = "Bạn có chắc muốn xóa User này?";
-    if (confirm(confirmMsg)) {
-      window.location.href = "/admin/Users/delete/" + UserId;
-      location.reload();
-    }
-  }
 
-  // bắt sự kiện Thay đổi trạng thái checkbox
-  document.querySelectorAll(".myCheckbox").forEach(checkbox => {
-    checkbox.addEventListener("change", () => {
-      updateCheckedIds();
-    });
-  });
-
-  // Update trạng thái checkbox
-  const updateCheckedIds = () => {
-    const checkedIds = [];
-    document.querySelectorAll(".myCheckbox:checked").forEach(checkbox => {
-      checkedIds.push(checkbox.getAttribute("data-id"));
-    });
-    sendCheckedIds(checkedIds);
-  }
-  // Gửi yêu cầu về server (AJAX)
-  const sendCheckedIds = (checkedIds) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/admin/users/deleteAll", true); // open() nhận vào 3 tham số (phương thức, url xử lý, async). true: bất đồng bộ
-    xhr.setRequestHeader("Content-Type", "application/json"); // dữ liệu gửi về dạng JSON
-    xhr.send(JSON.stringify({
-      checkedIds: checkedIds
-    }));
-  }
-  // Thêm hàm hiển thị hộp thoại xác nhận
-  const confirmDelete = () => {
-    return confirm("Bạn có chắc chắn muốn xóa các User đã chọn? User sẽ được chuyển đến thùng rác.");
-  }
-  const showDeleteAlert = () => {
-    const deleteAlert = document.getElementById("deleteAlert");
-    deleteAlert.style.display = "block";
-
-    // Ẩn thông báo sau một khoảng thời gian
-    setTimeout(() => {
-      deleteAlert.style.display = "none";
-    }, 1000); // 3 giây
-  };
-
-  // Bắt sự kiện click nút Xóa đã chọn
-  document.getElementById("deleteSelected").addEventListener("click", () => {
-    const checkedCheckboxes = document.querySelectorAll(".myCheckbox:checked");
-
-    if (checkedCheckboxes.length === 0) {
-      // Nếu không có mục nào được chọn, hiển thị thông báo
-      showDeleteAlert();
-    } else {
-      // Nếu có mục được chọn, xác nhận hành động xóa
-      if (confirmDelete()) {
-        updateCheckedIds();
-        location.reload(); // sau khi xóa reload trang
-      }
-    }
-  });
-</script>
 <script src="js/jquery-1.11.1.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/bootstrap-table.js"></script>
+<%-include("../layout/select.ejs", {router: "customers"})%>
 <%- include("../layout/footer")%>

@@ -29,7 +29,7 @@ router.post(
   "/order/zalopay_status/:app_trans_id",
   SiteController.checkZalopayStatus
 );
-
+router.post("/order/momo_succesed", SiteController.paymentMomoSuccess);
 router.get("/success", SiteController.success);
 router.get("/forget", SiteController.forgetPassword);
 router.post("/forget", SiteController.validateEmail);

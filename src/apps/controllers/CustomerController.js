@@ -74,7 +74,11 @@ const logout = (req, res) => {
   req.session.destroy();
   return res.redirect("/admin/customers/login");
 };
-
+const del = async (req, res) => {
+  const id = req.params.id;
+  await CustomerModel.deleteOne({ _id: id });
+  res.redirect("/admin/customers");
+};
 module.exports = {
   index,
   register,
@@ -83,4 +87,5 @@ module.exports = {
   login,
   postLogin,
   logout,
+  del,
 };

@@ -11,6 +11,6 @@ router.get("/admin/sliders/approved-:id",SliderController.approved)
 router.get("/admin/sliders/edit-:id",SliderController.edit)
 router.post("/admin/sliders/update-:id",uploadMw.single("image"),SliderController.update)
 
-router.get("/admin/sliders/delete-:id",SliderController.del)
+router.get("/admin/sliders/delete/:id",SliderController.del)
 
 module.exports = router;
