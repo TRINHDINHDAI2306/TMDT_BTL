@@ -19,7 +19,8 @@
         <h4><%=item.name%>d</h4>
       </div>
       <div class="cart-quantity col-lg-2 col-md-2 col-sm-12">
-        <input name="products[<%=item.id%>][qty]" type="number" id="quantity" class="form-control form-blue quantity" value="<%=item.qty%>" min="1">
+        <input name="products[<%=item.id%>][qty]" type="number" id="quantity-<%=item.id%>" class="form-control form-blue quantity" value="<%=item.qty%>" min="1">
+        <span id="quantity-error-<%=item.id%>" class="quantity-error" style="color: red;"></span>
       </div>
       <div class="cart-price col-lg-3 col-md-3 col-sm-12"><b><%=formatPrice(item.price)%></b><a href="/del-item-cart-<%=item.id%>">Xóa</a></div>
     </div>
@@ -156,7 +157,7 @@
     <div class="row">
       <div class="by-now col-lg-6 col-md-6 col-sm-12">
       <% if (customer) { %>
-      <button  onClick="orderConfirm('<%=customer._id%>')" class="btn btn-danger w-75 h-100">
+      <button id="btn-buy-now"  onClick="orderConfirm('<%=customer._id%>')" class="btn btn-danger w-75 h-100">
         <b>Mua ngay</b>
         <span>Giao hàng tận nơi siêu tốc</span>
       </button>
@@ -218,4 +219,27 @@
 
 <%- include("./layouts/sidebarSite")%>
     <%- include("./layouts/footerSite")%>
+</script>
+
+<!-- Check quanlity -->
+<script>
+  const btnUpdateCart = document.querySelector("#update-cart");
+  
+  var cartItems = <%- JSON.stringify(cartItems) %>;
+  console.log(cartItems);
+  cartItems.forEach(item => {
+      const quantityInput = document.getElementById(`quantity-${item.id}`);
+      const quantityError = document.getElementById(`quantity-error-${item.id}`);
+      const inputName = quantityInput.getAttribute("name");
+      quantityInput.addEventListener("change", function() {
+        const quantityValue = parseInt(quantityInput.value, 10);
+        if (quantityValue > item.storeHouse) {
+          quantityError.innerText = "Số lượng sản phẩm không đủ";
+          btnUpdateCart.disabled = true
+        } else {
+          quantityError.innerText = "";
+          btnUpdateCart.disabled = false
+        }
+      });
+  });
 </script>

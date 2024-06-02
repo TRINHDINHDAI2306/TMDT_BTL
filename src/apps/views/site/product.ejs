@@ -61,8 +61,11 @@
             </div>
           </div>
           <div class="col-auto my-1">
-            <button type="submit" class="btn btn-primary">Thêm vào giỏ hàng</button>
+            <button type="submit" id="buy-cart" class="btn btn-primary">Thêm vào giỏ hàng</button>
           </div>
+        </div>
+        <div class="form-row align-items-center">
+          <span id="quantityError" style="color:red;"></span>
         </div>
       </form>
       <% }%>
@@ -229,6 +232,23 @@ const com_body = document.getElementById("com-body").value;
   }
   })
     
+    
+</script>
+<script>
+  const quantityInput = document.querySelector("#quantity");
+  const quantityError = document.querySelector("#quantityError");
+  const buyCart = document.querySelector("#buy-cart");
+  const storehouseQuantity = <%= product.storehouse %>;
+  quantityInput.addEventListener("change", function() {
+    const quantityValue = parseInt(quantityInput.value, 10);
+      if (quantityValue >  storehouseQuantity ) {
+        quantityError.innerText = "Số lượng sản phẩm không đủ";
+        buyCart.disabled = true;
+      } else {
+        quantityError.innerText = "";
+        buyCart.disabled = false;
+      }
+    });
 </script>
 <%- include("./layouts/sidebarSite")%>
       <%- include("./layouts/footerSite")%>

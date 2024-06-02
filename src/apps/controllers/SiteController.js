@@ -250,6 +250,7 @@ const addToCart = async (req, res) => {
       thumbnails: product.thumbnails,
       price: product.price,
       qty: parseInt(qty),
+      storeHouse: product.storehouse,
     });
   }
   req.session.cart = newItems;
@@ -425,7 +426,7 @@ const order = async (req, res, next) => {
         amount: newOrder.total_price,
         description: `Payment for the order #${orderId}`,
         bank_code: "",
-        callback_url: "https://b074-1-53-37-194.ngrok-free.app/callback",
+        callback_url: "https://27e3-123-16-126-241.ngrok-free.app/callback",
       };
 
       // appid|app_trans_id|appuser|amount|apptime|embeddata|item
@@ -746,7 +747,7 @@ const paymentZalopay = async (req, res) => {
     amount: newOrder.total_price,
     description: ` Payment for the order #${orderId}`,
     bank_code: "zalopayapp",
-    callback_url: "https://b074-1-53-37-194.ngrok-free.app/callback",
+    callback_url: "https://27e3-123-16-126-241.ngrok-free.app/callback",
   };
 
   // appid|app_trans_id|appuser|amount|apptime|embeddata|item
@@ -799,7 +800,30 @@ const paymentZalopaySuccess = async (req, res) => {
         "update order's status = success where app_trans_id =",
         dataJson["app_trans_id"]
       );
+     const order = await orderModel.findOne({
+       orderId: dataJson["app_trans_id"],
+     });
+     const items = order.items;
+     for (const item of items) {
+       const product = await ProductModel.findById(item.prd_id);
+       product.storehouse -= item.qty;
+       await product.save();
+     }
+     const viewFolder = req.app.get("views");
+     const html = await ejs.renderFile(
+       path.join(viewFolder, "site/email-order.ejs"),
+       {
+         ...updateOrder.toObject(), // Ensure the result is plain object for EJS
+         items,
+       }
+     );
 
+     await transporter.sendMail({
+       from: '"Mobile Store" <mobileshop@gmail.com>', // sender address
+       to: result.email, // list of receivers
+       subject: "Xác nhận đơn hàng từ Mobile Store ✔", // Subject line
+       html, // html body
+     });
       result.return_code = 1;
       result.return_message = "success";
     }
