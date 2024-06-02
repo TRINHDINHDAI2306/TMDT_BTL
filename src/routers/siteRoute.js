@@ -23,11 +23,11 @@ router.get("/order/vnpay_return", SiteController.vnpayReturn);
 // zalopay
 router.post("/order/zalopay", SiteController.paymentZalopay);
 // zalopay success
-router.get("/order/zalopay_succesed", SiteController.paymentZalopaySuccess);
+router.post("/order/zalopay_succesed", SiteController.paymentZalopaySuccess);
 // check zalopay status
 router.post(
-  "/order/zalopay_status/:app_trans_id",
-  SiteController.checkZalopayStatus
+    "/order/zalopay_status/:app_trans_id",
+    SiteController.checkZalopayStatus
 );
 router.post("/order/momo_succesed", SiteController.paymentMomoSuccess);
 router.get("/success", SiteController.success);
@@ -39,13 +39,12 @@ router.get("/forget/success", SiteController.forgetSuccess);
 router.get("/information/orders", SiteController.informationOrders);
 router.get("/information/infoCustomer", SiteController.informationCustomer);
 router.get(
-  "/information/infoCustomer/edit",
-  SiteController.editInformationCustomer
+    "/information/infoCustomer/edit",
+    SiteController.editInformationCustomer
 );
 router.post(
-  "/information/infoCustomer/update",
-  SiteController.updateInformationCustomer
-
+    "/information/infoCustomer/update",
+    SiteController.updateInformationCustomer
 );
 
 module.exports = router;
