@@ -156,15 +156,15 @@
     <div class="row">
       <div class="by-now col-lg-6 col-md-6 col-sm-12">
       <% if (customer) { %>
-      <button onClick="orderConfirm('<%=customer._id%>')" class="btn btn-danger">
+      <button  onClick="orderConfirm('<%=customer._id%>')" class="btn btn-danger w-75 h-100">
         <b>Mua ngay</b>
         <span>Giao hàng tận nơi siêu tốc</span>
       </button>
       <% } else { %>
-      <button onClick="orderConfirm()" class="btn btn-danger">
+      <a onClick="orderConfirm()" class="btn btn-danger">
         <b>Mua ngay</b>
         <span>Giao hàng tận nơi siêu tốc</span>
-      </button>
+      </a>
       <% } %>
     </div>
       <script>
@@ -187,10 +187,10 @@
       });
       </script>
       <div class="by-now col-lg-6 col-md-6 col-sm-12">
-        <button type="button" class="btn btn-primary">
+        <a type="button" class="btn btn-primary">
           <b>Trả góp Online</b>
           <span>Vui lòng call (+84) 0988 550 553</span>
-        </button>
+        </a>
       </div>
     </div>
   </form>
@@ -218,3 +218,4 @@
 
 <%- include("./layouts/sidebarSite")%>
     <%- include("./layouts/footerSite")%>
+</script>

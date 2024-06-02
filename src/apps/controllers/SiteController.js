@@ -554,7 +554,6 @@ const order = async (req, res, next) => {
       }
     }
   } catch (err) {
-    s;
     next(err);
   }
 };
